@@ -296,6 +296,7 @@ int main(int argc, char** argv){//main
   TH2F* h_yz1 = new TH2F("h_yz1","yz of hit",5000,3150,3550,4000,-2000,2000);
   TH2F* h_zx2 = new TH2F("h_zx2","zx of hit",5000,3550,5200,4000,-2000,2000);
   TH2F* h_yz2 = new TH2F("h_yz2","yz of hit",5000,3550,5200,4000,-2000,2000);
+  TH2F* h_zr = new TH2F("h_zr","zr of hit",5000,3100,5200,1000,0,2000);
   
   //////layer histos///////
 
@@ -308,7 +309,7 @@ int main(int argc, char** argv){//main
   TH2F* h_nsxyl = new TH2F("h_nsxyl","xy of hit not scint (layers)",3000,-2000,2000,3000,-2000,2000);
   TH2F* h_sxyl = new TH2F("h_sxyl","xy of hit scint (layers)",3000,-2000,2000,3000,-2000,2000);
   
-
+  
   TH2F* h_nszx36 = new TH2F("h_nszx36","zx of hit not scint",5000,3100,5200,1000,-1200,1200);
   TH2F* h_nszx37 = new TH2F("h_nszx37","zx of hit not scint",5000,3100,5200,1000,-1200,1200);
   TH2F* h_nszx38 = new TH2F("h_nszx38","zx of hit not scint",5000,3100,5200,1000,-1200,1200);
@@ -343,7 +344,7 @@ int main(int argc, char** argv){//main
   TH2F* h_szx50 = new TH2F("h_szx50","zx of hit scint",5000,3100,5200,1000,-1200,1200);
   TH2F* h_szx51 = new TH2F("h_szx51","zx of hit scint",5000,3100,5200,1000,-1200,1200);
 
-
+  
   ///////////END///////////
 
   TH2F* h_nsxy36 = new TH2F("h_nsxy36","xy of hit not scint",1000,-1200,1200,1000,-1200,1200);
@@ -381,15 +382,18 @@ int main(int argc, char** argv){//main
   TH2F* h_sxy51 = new TH2F("h_sxy51","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
 
   TH2F* h_Egenreco = new TH2F("h_Egenreco","E reco sum versus gen",1000,0.,1000.,100,0.,20.);
-  TH1F* h_egenreco = new TH1F("h_egenreco","E reco sum over gen",100,0.,20.);
+  TH1F* h_egenreco = new TH1F("h_egenreco","E reco sum over gen",100,0.,2.);//changed from 20 to 2
 
 
-  TH2F* h_EpCone = new TH2F("h_EpCone","Ereco/gen versus cone size",10,0.,1.,100,0.,20.);
-  TH2F* h_EpPhi = new TH2F("h_EpPhi","Ereco/gen versus phi",100,-4.,4.,100,0.,20.);
+  TH2F* h_EpCone = new TH2F("h_EpCone","Ereco/gen versus cone size",10,0.,1.,100,0.,2.); // changed from 20 to 2 do to e weighting 
+  TH2F* h_EpPhi = new TH2F("h_EpPhi","Ereco/gen versus phi",100,-4.,4.,100,0.,2.); // changed from 20 to 2 
   TH2F* h_etagenmax= new TH2F("h_etagenmax","eta gen vs max",100,1.,5.,100,1.,5.);
   TH2F* h_phigenmax= new TH2F("h_phigenmax","phi gen vs max",100,-4,4.,100,-4.,4.);
-  TH1F* h_maxE = new TH1F("h_maxE","energy of highest energy hit",1000,0.,5000.);
-  TH1F* h_ECone03 = new TH1F("h_ECone03","Sum energy cone 03",1000,0.,50000.);
+  TH1F* h_maxE = new TH1F("h_maxE","energy of highest energy hit",1000,0.,1000.);// changed from 5000 to 1000
+  TH1F* h_ECone03 = new TH1F("h_ECone03","Sum energy cone 03",1000,0.,500.);// changed from 50000 to 500
+  // histos from sarahs code //
+  TH2F* h_banana = new TH2F("h_banana","banana plot",1000,0.,500.,1000,0.,500.);
+  TH1F* h_fracBH = new TH1F("h_fracBH","fraction in BH",100,-01.,1.1);
   
   ///////////////////////////////////////////////////////
   //////////////////  start event loop
@@ -430,11 +434,13 @@ int main(int argc, char** argv){//main
 
   unsigned ievtRec = 0;
   unsigned nSkipped = 0;
+  std::vector<double> absW; // from Sarah's code fill with weight
+  bool firstEvent = true;
 
   // ---------- Event loop starts ----------
 
-  // for (unsigned ievt(0); ievt<nEvts; ++ievt){//loop on entries
-  for (unsigned ievt(0);ievt<100;++ievt){ // just lookings at the first 100 events for now
+   for (unsigned ievt(0); ievt<nEvts; ++ievt){//loop on entries
+  //for (unsigned ievt(0);ievt<100;++ievt){ // just lookings at the first 100 events for now
     if (ievtRec>=lRecTree->GetEntries()) continue;
 
 
@@ -449,6 +455,30 @@ int main(int argc, char** argv){//main
       nSkipped++;
       continue;
     }
+    // start getting filling our weighting (from Sarah)
+
+    if(firstEvent) {
+      firstEvent=false;
+      //std::cout<<" size of ssvec of weights is "<<(*ssvec).size()<<std::endl;
+      double absweight=0;      
+      for (unsigned iL(0); iL<(*ssvec).size();++iL){
+	if(iL<((*ssvec).size()-1)) {
+	  unsigned next=iL+1;
+	  absweight=(((*ssvec)[iL].voldEdx())+((*ssvec)[next].voldEdx()))/2. ;
+	} else{
+	  absweight+=(*ssvec)[iL].voldEdx()  ;
+	}
+	absW.push_back(absweight);
+	absweight=0;
+      }
+      std::cout << " -- AbsWeight size: " << absW.size() << std::endl;
+      std::cout<<" values are ";
+      for (unsigned iL(0); iL<(*ssvec).size();++iL){
+	std::cout<<" "<<absW[iL];
+      }
+      std::cout<<std::endl;
+    }
+    // end of weightings
 
     double ptgen=-1.;
     double Egen=-1.;
@@ -510,14 +540,18 @@ int main(int argc, char** argv){//main
       if (lHit.energy()>1000.) std::cout << "reco energy"<< lHit.energy() << std::endl;
       //std::cout << "x "<< lHit.get_x() << "\t y "<<lHit.get_y() << "\t z" << lHit.get_z()<< std::endl; // added by Bryan, prints out xyz of each reco hit
       //std::cout<<"reco energy " << lHit.energy()<< " reco eta "<<lHit.eta()<< " reco phi " << lHit.phi() << " reco layer " << lHit.layer()<<" reco noise ratio "<< lHit.noiseFraction()<<std::endl;
+
+      double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)
+      double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
       
       // printf added by bryan
       printf("|| reco hit# %d  \t",iH);
       printf("| reco energy = %f \t",lHit.energy());
+      printf("| reco weighted E = %f \t", lenergy);
       printf("| reco eta = %f \t",lHit.eta());
       printf("| reco phi = %f \t",lHit.phi());
       printf("| reco layer = %d \t",lHit.layer());
-      printf("| reco noise ratio = %f\t|| \n",lHit.noiseFraction());
+      printf("| reco noise ratio = %f\t ||\n ",lHit.noiseFraction());
 
       h_energy->Fill(lHit.energy());
       h_z->Fill(lHit.get_z());
@@ -529,6 +563,7 @@ int main(int argc, char** argv){//main
       h_zl->Fill(lHit.get_z(),ixx);
       h_l2->Fill(lHit.layer()+0.5);
       h_xy->Fill(lHit.get_x(),lHit.get_y());
+      h_zr->Fill(lHit.get_z(),r_hit); // added by Bryan
       h_zx->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
       h_yz->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
       h_zx1->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
@@ -832,6 +867,11 @@ int main(int argc, char** argv){//main
     double rechitsumE03=0.;
     double rechitsumE04=0.;
     double rechitsumE05=0.;
+    double rechitBHsumE01=0.;// if a rechit is part of the scint 
+    double rechitBHsumE02=0.;
+    double rechitBHsumE03=0.;
+    double rechitBHsumE04=0.;
+    double rechitBHsumE05=0.;
     double etaW=0.;
     double phiW=0.;
     double norm=0.;
@@ -845,7 +885,7 @@ int main(int argc, char** argv){//main
       double leta = lHit.eta();
       double lphi = lHit.phi();
       //if(lphi<0) lphi=2.*TMath::Pi()+lphi;
-      double lenergy=lHit.energy();
+      double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)
       if (debug>20) std::cout << " -- hit " << iH << " et eta phi " << lenergy<<" "<<leta << " "<< lphi<<std::endl; 
 	//clean up rechit collection
 
@@ -859,11 +899,31 @@ int main(int argc, char** argv){//main
       double dR=DeltaR(etaaxis,phiaxis,leta,lphi);
       //double dR=fabs(etagen-leta);
       if(debug>20) std::cout<<" dR "<<dR<<" "<<etagen<<" "<<phigen<<" "<<leta<<" "<<lphi<<std::endl;
-      if(dR<0.1)  rechitsumE01+=lenergy;
-      if(dR<0.2)  rechitsumE02+=lenergy;      
-      if(dR<0.3)  rechitsumE03+=lenergy;
-      if(dR<0.4)  rechitsumE04+=lenergy;
-      if(dR<0.5)  rechitsumE05+=lenergy;
+      if(dR<0.1)
+	{
+	  rechitsumE01+=lenergy;
+	  if (isScint) rechitBHsumE01+=lenergy;
+	}
+      if(dR<0.2)
+	{
+	  rechitsumE02+=lenergy;
+	  if (isScint) rechitBHsumE02+=lenergy;
+	}
+      if(dR<0.3)
+	{
+	  rechitsumE03+=lenergy;
+	  if (isScint) rechitBHsumE03+=lenergy;
+	}
+      if(dR<0.4)
+	{
+	  rechitsumE04+=lenergy;
+	  if (isScint) rechitBHsumE04+=lenergy;
+	}
+      if(dR<0.5)
+	{
+	  rechitsumE05+=lenergy;
+	  if (isScint) rechitBHsumE05+=lenergy;
+	}
 
     }//loop on hits
     if(debug>1) {
@@ -873,15 +933,20 @@ int main(int argc, char** argv){//main
 
     if (MaxE>energy_max) energy_max=MaxE;
 
-    h_Egenreco->Fill(Egen,rechitsumE05/Egen);
-    h_egenreco->Fill(rechitsumE05/Egen);
-    h_EpPhi->Fill(phigen,rechitsumE02/Egen);
+    h_Egenreco->Fill(Egen,rechitsumE03/Egen);// changed from 5 to 3
+    h_egenreco->Fill(rechitsumE03/Egen); // changed from 5 to 3
+    h_EpPhi->Fill(phigen,rechitsumE03/Egen); // changed from 2 to 3
     h_EpCone->Fill(0.1,rechitsumE01/Egen);
     h_EpCone->Fill(0.2,rechitsumE02/Egen);
     h_EpCone->Fill(0.3,rechitsumE03/Egen);
     h_EpCone->Fill(0.4,rechitsumE04/Egen);
     h_EpCone->Fill(0.5,rechitsumE05/Egen);
     
+    h_banana->Fill(rechitsumE03-rechitBHsumE03,rechitBHsumE03); // added from sarah's code
+    double frac =-0.05; // from sarah
+    double notBH=rechitsumE03-rechitBHsumE03; // from sarah unused 
+    if(rechitsumE03>0) frac=rechitBHsumE03/rechitsumE03; // from sarah
+    h_fracBH->Fill(frac); // from sarah
 
     h_ECone03->Fill(rechitsumE03);
       //miptree->Fill();
