@@ -46,8 +46,9 @@ enlist=[0]
 #if opt.dogun : enlist=[3,5,7,10,20,30,40,50,60,70,80,90,100,125,150,175,200]
 if opt.dogun : 
     #enlist=[50]
-    #enlist=[5,10,20,30,50,70,100]
-    enlist=[5,10,20,30,40,60,80,100,150,200]
+    enlist=[5,10,20,30,50,100,200]
+    #enlist=[5,10,20,30,40,60,80,100,150,200]
+    #enlist = [20,30,50]
 
 #if opt.dogun : enlist=[2,5,10,20,40,60,80,100,150,200]#,300,400,500]
 
@@ -71,7 +72,7 @@ elif opt.version==25:
     INPATHPU="root://eoscms//eos/cms/store/cmst3/group/hgcal/Standalone/V25/MinBias/"
 elif opt.version==33:
     INPATHPU="root://eoscms//eos/cms/store/cmst3/group/hgcal/Standalone/V33/MinBias/pile/gitV00-03-07/e-/"
-elif opt.version==63:
+elif opt.version==64:
     if (label==''):
         INPATHPU="root://eoscms//eos/cms/store/cmst3/group/hgcal/HGCalTDR/gittestV8/MinBiasSmall/"
     else :
@@ -166,7 +167,7 @@ elif (opt.version==62):
     granularity='0-15:1'
     noise='0-15:0.15'
     threshold='0-15:5'
-elif (opt.version==63):
+elif (opt.version==64):
     granularity='0-68:1'
     if (label=='200u'):
         noise='0-51:0.13,53-68:0.15'

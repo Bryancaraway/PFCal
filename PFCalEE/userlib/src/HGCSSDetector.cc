@@ -92,7 +92,7 @@ void HGCSSDetector::buildDetector(const unsigned versionNumber,
   BHCAL.layerIdMin = indices_[4];
   BHCAL.layerIdMax = indices_[5];
   BHCAL.mipWeight = 1./0.63;//was 1.49 for 9mm scint
-  if (versionNumber>59 && versionNumber<64) BHCAL.mipWeight = 1./0.497;//for 3mm scint, v8
+  if (versionNumber>59 && versionNumber<=65) BHCAL.mipWeight = 1./0.497;//for 3mm scint, v8
   BHCAL.absWeight = 1.0;//92.196/5.848;
   BHCAL.gevWeight = 1.0;
   BHCAL.gevOffset = 0.0;
@@ -138,7 +138,7 @@ const HGCSSSubDetector & HGCSSDetector::subDetectorByLayer(const unsigned aLayer
 
 unsigned HGCSSDetector::getSection(const unsigned aLayer) const{
   if (aLayer>=nLayers_) {
-    std::cerr << " -- Error ! Trying to access layer " << aLayer 
+    std::cerr << " -- Error !! Trying to access layer " << aLayer 
 	      << " outside of range. nLayers = " << nLayers_
 	      << std::endl;
     exit(1);

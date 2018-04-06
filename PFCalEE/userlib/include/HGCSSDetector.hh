@@ -325,7 +325,7 @@ public:
       etaBoundary_[14] = 2.40832;
       etaBoundary_[15] = 2.42483;
     }
-    else if (versionNumber == 63){
+    else if (versionNumber == 64){
       indices_[0] = 0;
       indices_[1] = 10;
       indices_[2] = 20;
@@ -483,7 +483,7 @@ public:
   void finishInitialisation();
 
   inline bool isMixedLayer(const unsigned versionNumber,const unsigned aLayer){
-    if (versionNumber!=63) return false;
+    if (versionNumber!=64) return false;
     if (aLayer<36) return false;
     else return true;
   };
