@@ -16,6 +16,7 @@
 #include "TProfile.h"
 #include "TH3F.h"
 #include "TH2F.h"
+#include "TH2Poly.h"
 #include "TH1F.h"
 #include "TF1.h"
 #include "TStyle.h"
@@ -25,6 +26,11 @@
 #include "TMatrixD.h"
 #include "TMatrixDSym.h"
 #include "TVectorD.h"
+#include "TPaletteAxis.h"
+#include "TColor.h"
+#include "TROOT.h"
+#include "TRint.h"
+#include "TMultiGraph.h"
 
 #include "HGCSSEvent.hh"
 #include "HGCSSInfo.hh"
@@ -286,6 +292,17 @@ int main(int argc, char** argv){//main
   //Bryans analysis stuff//
   /////////////////////////
   TProfile* h_el = new TProfile("h_el","energy per layer",80,0,80,0,100);
+ 
+  
+  TH2Poly* map_1 = new TH2Poly();
+  //map_1->Honeycomb(-2803.17,-2790.5,6.49635,575,497);
+  //map_1 = geomConv.hexagonMap();
+
+  TH2Poly* map_2 = new TH2Poly();
+  //map_2 = geomConv.squareMap1();
+
+  TH2Poly* map_3 = new TH2Poly();
+  //map_3 = geomConv.squareMap2();
 
   TH2F* h_zx = new TH2F("h_zx","zx of hit",5000,3100,5200,1000,-2000,2000);
   TH2F* h_zx10000 = new TH2F("h_zx10000","zx of hit",10000,3100,5200,1000,-2000,2000);
@@ -309,7 +326,7 @@ int main(int argc, char** argv){//main
   TH2F* h_nsxyl = new TH2F("h_nsxyl","xy of hit not scint (layers)",3000,-2000,2000,3000,-2000,2000);
   TH2F* h_sxyl = new TH2F("h_sxyl","xy of hit scint (layers)",3000,-2000,2000,3000,-2000,2000);
   
-  
+
   TH2F* h_nszx36 = new TH2F("h_nszx36","zx of hit not scint",5000,3100,5200,1000,-1200,1200);
   TH2F* h_nszx37 = new TH2F("h_nszx37","zx of hit not scint",5000,3100,5200,1000,-1200,1200);
   TH2F* h_nszx38 = new TH2F("h_nszx38","zx of hit not scint",5000,3100,5200,1000,-1200,1200);
@@ -365,7 +382,7 @@ int main(int argc, char** argv){//main
   TH2F* h_nsxy51 = new TH2F("h_nsxy51","xy of hit not scint",1000,-1200,1200,1000,-1200,1200);
 
   TH2F* h_sxy36 = new TH2F("h_sxy36","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
-  TH2F* h_sxy37 = new TH2F("h_sxy37","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
+  TH2F* h_sxy37 = new TH2F("h_sxy37","xy of hit scint",1000,-3000,3000,1000,-3000,3000);
   TH2F* h_sxy38 = new TH2F("h_sxy38","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
   TH2F* h_sxy39 = new TH2F("h_sxy39","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
   TH2F* h_sxy40 = new TH2F("h_sxy40","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
@@ -523,6 +540,11 @@ int main(int argc, char** argv){//main
     // make some simple plots about all the rechits
     unsigned iMax=-1;
     double MaxE=-1.;
+    
+    //find rmin and rmax of rechits 
+
+    double rmin = 99999;
+    double rmax = -1;
 
     // ---------- Rechit loop starts ----------
 
@@ -545,9 +567,12 @@ int main(int argc, char** argv){//main
       const HGCSSSubDetector & subdet = myDetector.subDetectorByLayer(layer);
       isScint = subdet.isScint;
       TH2Poly *map = isScint?(subdet.type==DetectorEnum::BHCAL1?geomConv.squareMap1():geomConv.squareMap2()): shape==4?geomConv.squareMap() : shape==2?geomConv.diamondMap() : shape==3? geomConv.triangleMap(): geomConv.hexagonMap();
+       
+      //map_1->Fill(lHit.get_x(),lHit.get_y());
 
       unsigned cellid = map->FindBin(lHit.get_x(),lHit.get_y());
       geomConv.fill(lHit.layer(),lHit.energy(),0,cellid,lHit.get_z());
+      
 
       if (lHit.energy()>1000.) std::cout << "reco energy"<< lHit.energy() << std::endl;
       //std::cout << "x "<< lHit.get_x() << "\t y "<<lHit.get_y() << "\t z" << lHit.get_z()<< std::endl; // added by Bryan, prints out xyz of each reco hit
@@ -565,9 +590,10 @@ int main(int argc, char** argv){//main
       printf("| reco weighted E = %f \t", lenergy);
       printf("| reco eta = %f \t",lHit.eta());
       printf("| reco phi = %f \t",lHit.phi());
-      printf("| reco layer = %d \t",lHit.layer());
-      printf("| reco noise ratio = %f\t ||\n ",lHit.noiseFraction());
       */
+      //printf("| reco layer = %d \t",lHit.layer());
+      //printf("| reco noise ratio = %f\t ||\n ",lHit.noiseFraction());
+      //printf("| reco cellid = %d \t",cellid);
 
       penergy[layer]+=lenergy;
       nHits[layer] += 1 ;
@@ -594,6 +620,36 @@ int main(int argc, char** argv){//main
       h_zx1000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
       h_xyz->Fill(lHit.get_x(),lHit.get_y(),lHit.get_z());// added by Bryan
       h_etaphi->Fill(lHit.eta(),lHit.phi());
+
+      if(!isScint && ixx == 37){
+	if(r_hit > rmax){
+	  rmax = r_hit;
+	};
+	map_1 = geomConv.hexagonMap();
+	map_1->Fill(lHit.get_x(),lHit.get_y());
+      };
+      
+      if(isScint && subdet.type==DetectorEnum::BHCAL1  && ixx == 37){ 
+	if(r_hit < rmin){
+	  rmin = r_hit;
+	};
+	map_2 = geomConv.squareMap1();
+	map_2->Fill(lHit.get_x(),lHit.get_y());
+      };
+
+      if(isScint && subdet.type!=DetectorEnum::BHCAL1 && ixx == 37){ 
+	if(r_hit < rmin){
+	  rmin = r_hit;
+	};
+	map_3 = geomConv.squareMap2();
+	map_3->Fill(lHit.get_x(),lHit.get_y());
+      };
+      
+
+
+
+
+
       if(isScint)
 	{
 	  h_sxy->Fill(lHit.get_x(),lHit.get_y());
@@ -874,7 +930,8 @@ int main(int argc, char** argv){//main
 
     //std::cout<<"nhits in layer 2:"<<nHits[2]<<std::endl;
     //std::cout<<"summed energy in layer 2:"<<penergy[2]<<std::endl;
-    
+    std::cout<<"rmin in layer 37 is:"<<rmin<<std::endl;
+    std::cout<<"rmax in layer 37 is:"<<rmax<<std::endl;
 
     for(int ilayer = 0 ; ilayer < 80 ; ++ilayer){
       //if(nHits[ilayer] >= 1000) {
@@ -1243,6 +1300,26 @@ int main(int argc, char** argv){//main
   std::cout<<" size of gen hits "<< (*genvec).size()<< " size of rechits " << (*rechitvec).size()<<std::endl;
 
   if(debug) std::cout<<"writing files"<<std::endl;
+
+  // draw th2poly on canvas
+
+  //map_1->SetMinimum(0.);
+  TCanvas *C = new TCanvas("C", "C", 1920, 1080);
+  
+  map_1->GetZaxis()->SetRangeUser(1,200);
+  //map_2->GetZaxis()->SetRangeUser(1,200);
+  //map_3->GetZaxis()->SetRangeUser(1,200);
+
+
+
+
+
+  map_1->Draw("colz");
+  h_sxy37->Draw("colz same");
+  //map_2->Draw("colz ");
+  //map_3->Draw("colz");
+
+  C->Print("test.pdf");
 
   outputFile->cd();
   outputFile->Write();
