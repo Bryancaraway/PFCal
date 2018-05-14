@@ -292,7 +292,7 @@ int main(int argc, char** argv){//main
   /////////////////////////
   //Bryans analysis stuff//
   /////////////////////////
-  TProfile* h_el = new TProfile("h_el","energy per layer",80,0,80,0,100);
+  TProfile* h_el = new TProfile("h_el","energy per layer",80,0,80,0,150);
  
   
   TH2Poly* map_1 = new TH2Poly();
@@ -358,7 +358,7 @@ int main(int argc, char** argv){//main
     0,0,0,19,24, 25,30,29,32,37,
     41,41,42,43,44, 45,45,46,47};
 
-  int bin_exclude=2;
+  int bin_exclude=1;
   double r_cut[69]; // r_cut values to exclude a few boundary hits
 
   // BH fine part
@@ -367,13 +367,15 @@ int main(int argc, char** argv){//main
     for (int ibin=0;ibin<=91;ibin++){
       double eta=1.4+double(ibin)*0.01745;
       double z = z_layer[ilayer_org];
-      rbins2[91-ibin]=z*tan(2.*atan(exp(-eta)));    
+      rbins2[91-ibin]=z*tan(2.*atan(exp(-eta))); 
     }    
     sprintf(title,"map_TH2F_2_%d",ilayer);
     map_TH2F_2[ilayer-36] = new TH2F(title,title,360,-1.*TMath::Pi(),3.1404,91,rbins2);
     double eta_tmp=1.4+double(eta_index[ilayer_org]-bin_exclude)*0.01745;
+    double eta_tmp2=1.4+double(eta_index[ilayer_org])*0.01745;// to print out the boundary 
     double z_tmp = z_layer[ilayer_org];
-    r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-eta_tmp)));    
+    r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-eta_tmp)));
+    std::cout<<"r min of scint at layer "<<ilayer_org<<" is: "<<z_tmp*tan(2.*atan(exp(-eta_tmp2)))<<std::endl;
   }  
   // BH coarse part
   for (int ilayer=40;ilayer<=51;ilayer++){
@@ -386,8 +388,10 @@ int main(int argc, char** argv){//main
     sprintf(title,"map_TH2F_3_%d",ilayer);
     map_TH2F_3[ilayer-40] = new TH2F(title,title,287,-1.*TMath::Pi(),1.*TMath::Pi(),73,rbins3);
     double eta_tmp=1.4+double(eta_index[ilayer_org]-bin_exclude)*0.02182;
+    double eta_tmp2=1.4+double(eta_index[ilayer_org])*0.02182;// to print out the boundary 
     double z_tmp = z_layer[ilayer_org];
     r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-eta_tmp)));    
+    std::cout<<"r min of scint at layer "<<ilayer_org<<" is: "<<z_tmp*tan(2.*atan(exp(-eta_tmp2)))<<std::endl;
   } 
   /*
   for (int i_test = 0 ; i_test<69 ; i_test++){
@@ -396,7 +400,39 @@ int main(int argc, char** argv){//main
   */
 
   TH1F* h_egenreco_cut = new TH1F("h_egenreco_cut","E reco sum over gen",100,0.,2.);
-  
+  TH1F* h_eta = new TH1F("h_eta","eta of gen particle",120,1.6,2.8);
+  TProfile* h_lostE = new TProfile("h_lostE","lost energy of eta",12,1.6,2.8,0,100);  
+  TProfile* h_lostHit = new TProfile("h_lostHit","lost hits of eta",12,1.6,2.8,0,100000);
+
+  // eta vs reso 
+  TH1F* h_egenreco1617 = new TH1F("h_egenreco1617"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
+  TH1F* h_egenreco1718 = new TH1F("h_egenreco1718"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
+  TH1F* h_egenreco1819 = new TH1F("h_egenreco1819"," ErecoSum over Egen, eta 1.8-1.9",100,0.,2.);
+  TH1F* h_egenreco1920 = new TH1F("h_egenreco1920"," ErecoSum over Egen, eta 1.9-2.0",100,0.,2.);
+  TH1F* h_egenreco2021 = new TH1F("h_egenreco2021"," ErecoSum over Egen, eta 2.0-2.1",100,0.,2.);
+  TH1F* h_egenreco2122 = new TH1F("h_egenreco2122"," ErecoSum over Egen, eta 2.1-2.2",100,0.,2.);
+  TH1F* h_egenreco2223 = new TH1F("h_egenreco2223"," ErecoSum over Egen, eta 2.2-2.3",100,0.,2.);
+  TH1F* h_egenreco2324 = new TH1F("h_egenreco2324"," ErecoSum over Egen, eta 2.3-2.4",100,0.,2.);
+  TH1F* h_egenreco2425 = new TH1F("h_egenreco2425"," ErecoSum over Egen, eta 2.4-2.5",100,0.,2.);
+  TH1F* h_egenreco2526 = new TH1F("h_egenreco2526"," ErecoSum over Egen, eta 2.5-2.6",100,0.,2.);
+  TH1F* h_egenreco2627 = new TH1F("h_egenreco2627"," ErecoSum over Egen, eta 2.6-2.7",100,0.,2.);
+  TH1F* h_egenreco2728 = new TH1F("h_egenreco2728"," ErecoSum over Egen, eta 2.7-2.8",100,0.,2.);
+
+  TH1F* h_egenreco1617_cut = new TH1F("h_egenreco1617_cut"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
+  TH1F* h_egenreco1718_cut = new TH1F("h_egenreco1718_cut"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
+  TH1F* h_egenreco1819_cut = new TH1F("h_egenreco1819_cut"," ErecoSum over Egen, eta 1.8-1.9",100,0.,2.);
+  TH1F* h_egenreco1920_cut = new TH1F("h_egenreco1920_cut"," ErecoSum over Egen, eta 1.9-2.0",100,0.,2.);
+  TH1F* h_egenreco2021_cut = new TH1F("h_egenreco2021_cut"," ErecoSum over Egen, eta 2.0-2.1",100,0.,2.);
+  TH1F* h_egenreco2122_cut = new TH1F("h_egenreco2122_cut"," ErecoSum over Egen, eta 2.1-2.2",100,0.,2.);
+  TH1F* h_egenreco2223_cut = new TH1F("h_egenreco2223_cut"," ErecoSum over Egen, eta 2.2-2.3",100,0.,2.);
+  TH1F* h_egenreco2324_cut = new TH1F("h_egenreco2324_cut"," ErecoSum over Egen, eta 2.3-2.4",100,0.,2.);
+  TH1F* h_egenreco2425_cut = new TH1F("h_egenreco2425_cut"," ErecoSum over Egen, eta 2.4-2.5",100,0.,2.);
+  TH1F* h_egenreco2526_cut = new TH1F("h_egenreco2526_cut"," ErecoSum over Egen, eta 2.5-2.6",100,0.,2.);
+  TH1F* h_egenreco2627_cut = new TH1F("h_egenreco2627_cut"," ErecoSum over Egen, eta 2.6-2.7",100,0.,2.);
+  TH1F* h_egenreco2728_cut = new TH1F("h_egenreco2728_cut"," ErecoSum over Egen, eta 2.7-2.8",100,0.,2.);
+
+
+ 
   ///end of mapping per layer///
   TH2F* h_zx = new TH2F("h_zx","zx of hit",5000,3100,5200,1000,-2000,2000);
   TH2F* h_zx10000 = new TH2F("h_zx10000","zx of hit",10000,3100,5200,1000,-2000,2000);
@@ -616,6 +652,9 @@ int main(int argc, char** argv){//main
       //if(phigen<0) phigen=2.*TMath::Pi()+phigen;
     }
     h_getaphi->Fill(etagen,phigen);
+    
+    h_eta->Fill(etagen); // check statistics by eta distribution
+
     if(debug) {
       std::cout<<" gen vec size is "<<(*genvec).size()<<std::endl;
       std::cout<<" first gen   pt  "<<ptgen<<" egen  "<<Egen<<" pidgen  "<<pidgen<<" etagen  "<<etagen<<" phi gen "<<phigen<<  "mass gen "<< massgen<<std::endl;
@@ -643,7 +682,7 @@ int main(int argc, char** argv){//main
     // ---------- Rechit loop starts ----------
 
     // for longitudinal energy profile 
-    double penergy[80];
+    double penergy[80]={0};
     int nHits[80];
 
     std::map<std::pair<int,int>,float> mymap_rechit;
@@ -686,6 +725,8 @@ int main(int argc, char** argv){//main
       printf("| reco phi = %f \t",lHit.phi());
       */
       //printf("| reco layer = %d \t",lHit.layer());
+      //printf("| reco zhit = %d \t\n",lHit.get_x());
+
       //printf("| reco noise ratio = %f\t ||\n ",lHit.noiseFraction());
       //printf("| reco cellid = %d \t",cellid);
 
@@ -715,6 +756,8 @@ int main(int argc, char** argv){//main
       h_xyz->Fill(lHit.get_x(),lHit.get_y(),lHit.get_z());// added by Bryan
       h_etaphi->Fill(lHit.eta(),lHit.phi());
       
+
+      //std::cout<<"Layer of hit "<<lHit.layer()<< " at z = "<<lHit.get_z()<<std::endl;
 
       // mapping stuff
 
@@ -1030,6 +1073,7 @@ int main(int argc, char** argv){//main
     for(int ilayer = 0 ; ilayer < 80 ; ++ilayer){
       //if(nHits[ilayer] >= 1000) {
       h_el->Fill(ilayer+0.5,penergy[ilayer]);
+      //std::cout<<"Layer, "<<ilayer<<" has a summed rechit energy of "<<penergy[ilayer]<<std::endl;
       //};
     };
 
@@ -1046,7 +1090,11 @@ int main(int argc, char** argv){//main
 
     // make e/p plots for various cones around gen particle
     double rechitsumE03_cut=0; // sum of rechit energy with the exclusion of boundry scint layers 
-    
+    double rechitsum[12]={0}; // for eta vs reso plots
+    double rechitsum_cut[12]={0}; // for eta vs reso plots with scint cut
+    double rechitsum_lost=0;
+    int    lostHit=0;
+
     double rechitsumE01=0.;
     double rechitsumE02=0.;
     double rechitsumE03=0.;
@@ -1118,16 +1166,39 @@ int main(int argc, char** argv){//main
 	  if (isScint) rechitBHsumE02+=lenergy;
 	  if (lHit.noiseFraction()<0.5) rechitsumEWoNoise02+=lenergy;
 	}
+
+      ///////////used to make energy reso plots//////////////
       if(dR<0.3)
 	{
 	  rechitsumE03+=lenergy;
+ 
+	  double eTemp = lenergy;
+	  if (r_hit < r_cut[layer]){
+	    eTemp = 0;// exclude boundry  scint layers
+	    rechitsum_lost+=lenergy;
+	    lostHit+=1;
+	  }
+	  rechitsumE03_cut+=eTemp;
+	  
 
-	  if (r_hit < r_cut[layer]) lenergy = 0;// exclude boundry  scint layers
-	  rechitsumE03_cut+=lenergy;
+	  double etaStart = 1.6;
+	  double etaEnd   = 2.8;
+	  double etaEter  = .1;
+	  for ( int ieta = 0 ; etaEter*ieta+etaStart < etaEnd ; ++ieta){
+	    if ( etagen >= etaEter*ieta+etaStart && etagen <= etaEter*ieta+etaStart+.1){
+	      //std::cout<<etaEter*ieta+etaStart<<" < "<<etagen<< " < "<<etaEter*ieta+etaStart+.1<<std::endl;
+	      rechitsum[ieta]+=lenergy;
+	      if ( r_hit < r_cut[layer] ) lenergy = 0;
+	      rechitsum_cut[ieta]+=lenergy;
+	    }
+	  }
+	  
 
 	  if (isScint) rechitBHsumE03+=lenergy;
 	  if (lHit.noiseFraction()<0.5) rechitsumEWoNoise03+=lenergy;
 	}
+
+
       if(dR<0.4)
 	{
 	  rechitsumE04+=lenergy;
@@ -1152,6 +1223,68 @@ int main(int argc, char** argv){//main
     h_Egenreco->Fill(Egen,rechitsumE03/Egen);// changed from 5 to 3
     h_egenreco_cut->Fill(rechitsumE03_cut/Egen); // with scint cuts
     h_egenreco->Fill(rechitsumE03/Egen); // changed from 5 to 3
+    h_lostE->Fill(etagen,rechitsum_lost); // fill lost energy per eta
+    h_lostHit->Fill(etagen,lostHit); // fill lost hits per eta
+
+    std::cout<<"at eta gen. "<<etagen<<", the lost energy and hits are "<<rechitsum_lost<<" and "<<lostHit<<" respectively."<<std::endl;
+
+    double etaStart = 1.6;
+
+    double etaEter  = .1;
+    
+    for (int index=0;index<12;++index){
+      printf("rechitsum[%d]/Egen = %f \n",index,rechitsum[index]/Egen); 
+    }
+    if ( etagen >= etaEter*0+etaStart && etagen <= etaEter*0+etaStart+.1 ){
+      h_egenreco1617->Fill(rechitsum[0]/Egen);
+      h_egenreco1617_cut->Fill(rechitsum_cut[0]/Egen);
+    }
+    if ( etagen >= etaEter*1+etaStart && etagen <= etaEter*1+etaStart+.1 ){
+      h_egenreco1718->Fill(rechitsum[1]/Egen);
+      h_egenreco1718_cut->Fill(rechitsum_cut[1]/Egen);
+    }
+    if ( etagen >= etaEter*2+etaStart && etagen <= etaEter*2+etaStart+.1 ){
+      h_egenreco1819->Fill(rechitsum[2]/Egen);
+      h_egenreco1819_cut->Fill(rechitsum_cut[2]/Egen);
+    }
+    if ( etagen >= etaEter*3+etaStart && etagen <= etaEter*3+etaStart+.1 ){
+      h_egenreco1920->Fill(rechitsum[3]/Egen);
+      h_egenreco1920_cut->Fill(rechitsum_cut[3]/Egen);
+    }
+    if ( etagen >= etaEter*4+etaStart && etagen <= etaEter*4+etaStart+.1 ){
+      h_egenreco2021->Fill(rechitsum[4]/Egen);
+      h_egenreco2021_cut->Fill(rechitsum_cut[4]/Egen);
+    }
+    if ( etagen >= etaEter*5+etaStart && etagen <= etaEter*5+etaStart+.1 ){
+      h_egenreco2122->Fill(rechitsum[5]/Egen);
+      h_egenreco2122_cut->Fill(rechitsum_cut[5]/Egen);
+    }
+    if ( etagen >= etaEter*6+etaStart && etagen <= etaEter*6+etaStart+.1 ){
+      h_egenreco2223->Fill(rechitsum[6]/Egen);
+      h_egenreco2223_cut->Fill(rechitsum_cut[6]/Egen);
+    }
+    if ( etagen >= etaEter*7+etaStart && etagen <= etaEter*7+etaStart+.1 ){
+      h_egenreco2324->Fill(rechitsum[7]/Egen);
+      h_egenreco2324_cut->Fill(rechitsum_cut[7]/Egen);
+    }
+    if ( etagen >= etaEter*8+etaStart && etagen <= etaEter*8+etaStart+.1 ){
+      h_egenreco2425->Fill(rechitsum[8]/Egen);
+      h_egenreco2425_cut->Fill(rechitsum_cut[8]/Egen);
+    }
+    if ( etagen >= etaEter*9+etaStart && etagen <= etaEter*9+etaStart+.1 ){
+      h_egenreco2526->Fill(rechitsum[9]/Egen);
+      h_egenreco2526_cut->Fill(rechitsum_cut[9]/Egen);
+    }
+    if ( etagen >= etaEter*10+etaStart && etagen <= etaEter*10+etaStart+.1 ){
+      h_egenreco2627->Fill(rechitsum[10]/Egen);
+      h_egenreco2627_cut->Fill(rechitsum_cut[10]/Egen);
+    }
+    if ( etagen >= etaEter*11+etaStart && etagen <= etaEter*11+etaStart+.1 ){
+      h_egenreco2728->Fill(rechitsum[11]/Egen);
+      h_egenreco2728_cut->Fill(rechitsum_cut[11]/Egen);
+    }
+   
+    
     h_EpPhi->Fill(phigen,rechitsumE03/Egen); // changed from 2 to 3
     h_EpCone->Fill(0.1,rechitsumE01/Egen);
     h_EpCone->Fill(0.2,rechitsumE02/Egen);
