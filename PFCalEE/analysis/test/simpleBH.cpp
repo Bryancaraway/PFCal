@@ -292,9 +292,15 @@ int main(int argc, char** argv){//main
   /////////////////////////
   //Bryans analysis stuff//
   /////////////////////////
-  TProfile* h_el = new TProfile("h_el","energy per layer",80,0,80,0,150);
- 
-  
+  TProfile* h_el = new TProfile("h_el","energy per layer",52,0,52);
+  TProfile* h_el_off = new TProfile("h_el_off","energy per layer",52,0,52);
+  TProfile* h_elw = new TProfile("h_elw","mip per layer",52,0,52);
+  TProfile* h_elw_off = new TProfile("h_elw_off","mip per layer",52,0,52);
+  //TProfile* h_ezw = new TProfile("h_ezw","mip vs z",5200,0,5200);
+  //TProfile* h_ezw_off = new TProfile("h_ezw","mip vs z",5200,0,5200);
+
+
+
   TH2Poly* map_1 = new TH2Poly();
   //map_1->Honeycomb(-2803.17,-2790.5,6.49635,575,497);
   //map_1 = geomConv.hexagonMap();
@@ -401,9 +407,16 @@ int main(int argc, char** argv){//main
 
   TH1F* h_egenreco_cut = new TH1F("h_egenreco_cut","E reco sum over gen",100,0.,2.);
   TH1F* h_eta = new TH1F("h_eta","eta of gen particle",120,1.6,2.8);
-  TProfile* h_lostE = new TProfile("h_lostE","lost energy of eta",12,1.6,2.8,0,100);  
-  TProfile* h_lostHit = new TProfile("h_lostHit","lost hits of eta",12,1.6,2.8,0,100000);
-
+  TProfile* h_lostE = new TProfile("h_lostE","lost energy of eta",24,1.6,2.8,0,100);  
+  TProfile* h_lostHit = new TProfile("h_lostHit","lost hits of eta",24,1.6,2.8,0,100000);
+  TH1F* h_egenreco_scint = new TH1F("h_egenreco_scint","E reco sum (Scint)",100,0.,0.5);
+  TH1F* h_egenreco_scint_cut = new TH1F("h_egenreco_scint_cut","E reco sum (Scint Cut)",100,0.,0.05);
+  TH1F* h_egenreco_Si = new TH1F("h_egenreco_Si","E reco sum (Si)",100,0.,2.);
+  TH2F* h_e_ScintvsSi = new TH2F("h_e_ScintvsSi","E Scint vs E Si",600,0,600,600,0,600);
+  TH1F* h_egenreco_rare = new TH1F("h_egenreco_rare"," E reco sum over gen",100,0,2);
+  TH1F* h_egenreco_rare_cut = new TH1F("h_egenreco_rare_cut"," E reco sum over gen",100,0,2);
+  TH1F* h_ScintoverSi = new TH1F("h_ScintoverSi","E Scint over E Si",200,0,2);
+  
   // eta vs reso 
   TH1F* h_egenreco1617 = new TH1F("h_egenreco1617"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
   TH1F* h_egenreco1718 = new TH1F("h_egenreco1718"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
@@ -434,6 +447,7 @@ int main(int argc, char** argv){//main
 
  
   ///end of mapping per layer///
+  /*
   TH2F* h_zx = new TH2F("h_zx","zx of hit",5000,3100,5200,1000,-2000,2000);
   TH2F* h_zx10000 = new TH2F("h_zx10000","zx of hit",10000,3100,5200,1000,-2000,2000);
   TH2F* h_zx1000 = new TH2F("h_zx1000","zx of hit",1000,3100,5200,1000,-2000,2000);
@@ -443,10 +457,11 @@ int main(int argc, char** argv){//main
   TH2F* h_yz1 = new TH2F("h_yz1","yz of hit",5000,3150,3550,4000,-2000,2000);
   TH2F* h_zx2 = new TH2F("h_zx2","zx of hit",5000,3550,5200,4000,-2000,2000);
   TH2F* h_yz2 = new TH2F("h_yz2","yz of hit",5000,3550,5200,4000,-2000,2000);
+  */
   TH2F* h_zr = new TH2F("h_zr","zr of hit",5000,3100,5200,1000,0,2000);
   
   //////layer histos///////
-
+  /*
   TH2F* h_nszxl = new TH2F("h_nszxl","zx of hit not scint (layers)",1400,3800,5200,3000,-2000,2000);
   TH2F* h_szxl = new TH2F("h_szxl","zx of hit scint (layers)",1400,3800,5200,3000,-2000,2000);
   TH2F* h_nszx = new TH2F("h_nszx","zx of hit not scint",1900,3100,5200,4000,-2000,2000);
@@ -527,7 +542,7 @@ int main(int argc, char** argv){//main
   TH2F* h_sxy49 = new TH2F("h_sxy49","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
   TH2F* h_sxy50 = new TH2F("h_sxy50","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
   TH2F* h_sxy51 = new TH2F("h_sxy51","xy of hit scint",1000,-1200,1200,1000,-1200,1200);
-
+  */
   TH2F* h_Egenreco = new TH2F("h_Egenreco","E reco sum versus gen",1000,0.,1000.,100,0.,20.);
   TH1F* h_egenreco = new TH1F("h_egenreco","E reco sum over gen",100,0.,2.);//changed from 20 to 2
   TH1F* h_egensim = new TH1F("h_egensim","E sim sum over gen",100,0.,2.);//changed from 20 to 2
@@ -682,7 +697,7 @@ int main(int argc, char** argv){//main
     // ---------- Rechit loop starts ----------
 
     // for longitudinal energy profile 
-    double penergy[80]={0};
+   
     int nHits[80];
 
     std::map<std::pair<int,int>,float> mymap_rechit;
@@ -730,11 +745,11 @@ int main(int argc, char** argv){//main
       //printf("| reco noise ratio = %f\t ||\n ",lHit.noiseFraction());
       //printf("| reco cellid = %d \t",cellid);
 
-      penergy[layer]+=lenergy;
+     
       nHits[layer] += 1 ;
       
       
-      h_energy->Fill(lHit.energy());
+      h_energy->Fill(lenergy);
       h_z->Fill(lHit.get_z());
       h_z1->Fill(lHit.get_z());
       h_z2->Fill(lHit.get_z());
@@ -745,6 +760,7 @@ int main(int argc, char** argv){//main
       h_l2->Fill(lHit.layer()+0.5);
       h_xy->Fill(lHit.get_x(),lHit.get_y());
       h_zr->Fill(lHit.get_z(),r_hit); // added by Bryan
+      /*
       h_zx->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
       h_yz->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
       h_zx1->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
@@ -754,6 +770,7 @@ int main(int argc, char** argv){//main
       h_zx10000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
       h_zx1000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
       h_xyz->Fill(lHit.get_x(),lHit.get_y(),lHit.get_z());// added by Bryan
+      */
       h_etaphi->Fill(lHit.eta(),lHit.phi());
       
 
@@ -776,17 +793,17 @@ int main(int argc, char** argv){//main
       //else         map_1_1->Fill(lHit.get_x(),lHit.get_y());
 
       if(isScint){ 
-	if (r_hit < r_cut[lHit.layer()]){
-	  r_hit = 0;
-	  std::cout<<"EXLUDING RecHit is less than "<<r_cut[lHit.layer()]<<" for layer "<<lHit.layer()<<std::endl;
-	};
+	//if (dR < .3 && r_hit < r_cut[lHit.layer()]){
+	//r_hit = 0;
+	  //std::cout<<"EXLUDING RecHit is less than "<<r_cut[lHit.layer()]<<" for layer "<<lHit.layer()<<std::endl;
+	//};
 	if (ixx>=36&&ixx<=39)      map_TH2F_2[ixx-36]->Fill(lHit.phi(),r_hit);
 	else if (ixx>=40&&ixx<=51) map_TH2F_3[ixx-40]->Fill(lHit.phi(),r_hit);
       }
 
       
       //end of mapping stuff
-
+      /*
       if(isScint)
 	{
 	  h_sxy->Fill(lHit.get_x(),lHit.get_y());
@@ -797,12 +814,12 @@ int main(int argc, char** argv){//main
 	  h_nsxy->Fill(lHit.get_x(),lHit.get_y());
 	  h_nszx->Fill(lHit.get_z(),lHit.get_x());
 	}
-      
+      */
 
       int ilayer = ixx;
 
       // added in zx comps. Bryan//////
-
+      /*
       if(ilayer==36) {
 	if(isScint)
 	  {
@@ -1060,7 +1077,7 @@ int main(int argc, char** argv){//main
 	  }
       };
 
-
+      */
     }//loop on hits
 
     //fill long energy profile 
@@ -1070,12 +1087,12 @@ int main(int argc, char** argv){//main
     //std::cout<<"rmin in layer 37 is:"<<rmin<<std::endl;
     //std::cout<<"rmax in layer 37 is:"<<rmax<<std::endl;
 
-    for(int ilayer = 0 ; ilayer < 80 ; ++ilayer){
+
       //if(nHits[ilayer] >= 1000) {
-      h_el->Fill(ilayer+0.5,penergy[ilayer]);
+
       //std::cout<<"Layer, "<<ilayer<<" has a summed rechit energy of "<<penergy[ilayer]<<std::endl;
       //};
-    };
+    
 
     HGCSSRecoHit lHit = (*rechitvec)[iMax];
     double maxeta = lHit.eta();
@@ -1093,6 +1110,10 @@ int main(int argc, char** argv){//main
     double rechitsum[12]={0}; // for eta vs reso plots
     double rechitsum_cut[12]={0}; // for eta vs reso plots with scint cut
     double rechitsum_lost=0;
+    double rechitsum_scint=0;
+    double rechitsum_Si=0;
+    double rechitsumNoW[80] = {0};
+    double penergy[80]={0};
     int    lostHit=0;
 
     double rechitsumE01=0.;
@@ -1171,9 +1192,19 @@ int main(int argc, char** argv){//main
       if(dR<0.3)
 	{
 	  rechitsumE03+=lenergy;
- 
+	  rechitsumNoW[layer] += lHit.energy();
+	  penergy[layer]+=lenergy;
+
+	  if (isScint && r_hit >= r_cut[layer]){
+	    rechitsum_scint+=lenergy;
+	  }
+	  if (!isScint){
+	    rechitsum_Si+=lenergy;
+	  }
+
 	  double eTemp = lenergy;
-	  if (r_hit < r_cut[layer]){
+	  if (isScint && r_hit < r_cut[layer]){
+	    //std::cout<<"EXLUDING RecHit is less than "<<r_cut[layer]<<" for layer "<<layer<<std::endl;
 	    eTemp = 0;// exclude boundry  scint layers
 	    rechitsum_lost+=lenergy;
 	    lostHit+=1;
@@ -1213,10 +1244,10 @@ int main(int argc, char** argv){//main
 	}
 
     }//loop on hits
-    if(debug>1) {
-      std::cout<<" reco gen are "<<rechitsumE01<<" "<<rechitsumE02<<" "<<rechitsumE03<<" "<<rechitsumE04<<" "<<rechitsumE05<<" "<<Egen<<std::endl;
-    }
-    if(debug>5) std::cout<<"weighted eta phi are "<<etaW/norm<<" "<<phiW/norm<<std::endl;
+    //if(debug>1) {
+    //std::cout<<" reco gen are "<<rechitsumE01<<" "<<rechitsumE02<<" "<<rechitsumE03<<" "<<rechitsumE04<<" "<<rechitsumE05<<" "<<Egen<<std::endl;
+    //}
+    //if(debug>5) std::cout<<"weighted eta phi are "<<etaW/norm<<" "<<phiW/norm<<std::endl;
 
     if (MaxE>energy_max) energy_max=MaxE;
 
@@ -1225,16 +1256,50 @@ int main(int argc, char** argv){//main
     h_egenreco->Fill(rechitsumE03/Egen); // changed from 5 to 3
     h_lostE->Fill(etagen,rechitsum_lost); // fill lost energy per eta
     h_lostHit->Fill(etagen,lostHit); // fill lost hits per eta
+    h_egenreco_scint->Fill(rechitsum_scint/Egen); //dead scint eta ring 
+    h_egenreco_scint_cut->Fill(rechitsum_lost/Egen);
+    h_egenreco_Si->Fill(rechitsum_Si/Egen);
+    h_e_ScintvsSi->Fill(rechitsum_Si,rechitsum_lost+rechitsum_scint);
+    h_ScintoverSi->Fill(rechitBHsumE03/rechitsum_Si);
 
-    std::cout<<"at eta gen. "<<etagen<<", the lost energy and hits are "<<rechitsum_lost<<" and "<<lostHit<<" respectively."<<std::endl;
+    
+    if (rechitBHsumE03/Egen >= .1){ //tuned---fill only when a substantial amount of energy deposited inside the scint
+
+      h_egenreco_rare->Fill(rechitsumE03/Egen);
+      h_egenreco_rare_cut->Fill(rechitsumE03_cut/Egen);
+    }
+  
+    //printf("rechitsum_lost = %f || rechitsum_scint = %f || rechitsum_Si = %f || rechitsumE03 = %f \n",rechitsum_lost,rechitsum_scint,rechitsum_Si,rechitsumE03);
+    double tempPenergy[80]= {0};
+    double tempWenergy[80] = {0};
+
+    for(int ilayer = 0 ; ilayer < 69 ; ++ilayer){
+      h_el->Fill(ilayer+0.5,penergy[ilayer]);
+      h_elw->Fill(ilayer+0.5,rechitsumNoW[ilayer]);
+      if (ilayer < 53){
+	tempPenergy[ilayer] = penergy[ilayer];
+	tempWenergy[ilayer] = rechitsumNoW[ilayer];
+      }
+      if (ilayer >= 53){
+	tempPenergy[ilayer-17] += penergy[ilayer];
+	tempWenergy[ilayer-17] += rechitsumNoW[ilayer];
+      }
+
+    }
+    for(int ilayer = 0 ; ilayer < 52 ; ++ilayer){
+      h_el_off->Fill(ilayer+0.5,tempPenergy[ilayer]); // tprofile with no offset  
+      h_elw_off->Fill(ilayer+0.5,tempWenergy[ilayer]);
+    //printf("tempPenergy[%d] = %f \t penergy[%d] = %f \n", ilayer, tempPenergy[ilayer],ilayer,penergy[ilayer]);
+    }
+    //std::cout<<"at eta gen. "<<etagen<<", the lost energy and hits are "<<rechitsum_lost<<" and "<<lostHit<<" respectively."<<std::endl;
 
     double etaStart = 1.6;
 
     double etaEter  = .1;
     
-    for (int index=0;index<12;++index){
-      printf("rechitsum[%d]/Egen = %f \n",index,rechitsum[index]/Egen); 
-    }
+    //for (int index=0;index<12;++index){
+      //printf("rechitsum[%d]/Egen = %f \n",index,rechitsum[index]/Egen); 
+    //}
     if ( etagen >= etaEter*0+etaStart && etagen <= etaEter*0+etaStart+.1 ){
       h_egenreco1617->Fill(rechitsum[0]/Egen);
       h_egenreco1617_cut->Fill(rechitsum_cut[0]/Egen);
@@ -1320,7 +1385,7 @@ int main(int argc, char** argv){//main
     //const unsigned interCalib = 3; // check against generation setting    
     //myDigitiser.setIntercalibrationFactor(interCalib);
     const unsigned nSiLayers = 2;  // this is what I see in generation, but why?
-    std::cout << "KHKH: inFilePath,bypassR,nSiLayers: " << inFilePath<<" "<<bypassR<<" "<<nSiLayers << std::endl;
+    //std::cout << "KHKH: inFilePath,bypassR,nSiLayers: " << inFilePath<<" "<<bypassR<<" "<<nSiLayers << std::endl;
     HGCSSCalibration mycalib(inFilePath,bypassR,nSiLayers);
     mycalib.setVertex(eventRec->vtx_x(),eventRec->vtx_y(),eventRec->vtx_z());
 
@@ -1507,7 +1572,7 @@ int main(int argc, char** argv){//main
     */
 
     h_egensim->Fill(simhitsumE03/Egen);
-    
+    /*
     printf("simhitsumE01,2,3:   %8.3f, %8.3f, %8.3f\n",simhitsumE01,simhitsumE02,simhitsumE03);
     printf("rechitsumE01,2,3:   %8.3f, %8.3f, %8.3f\n",rechitsumE01,rechitsumE02,rechitsumE03);
     printf(" (w/o noise):       %8.3f, %8.3f, %8.3f\n",rechitsumE01,rechitsumE02,rechitsumE03);
@@ -1522,7 +1587,7 @@ int main(int argc, char** argv){//main
 	   rechitBHsumE02/simhitBHsumE02,
 	   rechitBHsumE03/simhitBHsumE03);
     std::cout << "nhit: "  << nhit << " / " << (*simhitvec).size() << " " << nhitscinti << std::endl;
-
+    */
     //=========
 
     geomConv.initialiseHistos();
@@ -1530,9 +1595,9 @@ int main(int argc, char** argv){//main
    }//loop on entries
   // ---------- Event loop ends ----------
 
-  std::cout<< "max energy "<< energy_max << std::endl;
+  //std::cout<< "max energy "<< energy_max << std::endl;
 
-  std::cout<<" size of gen hits "<< (*genvec).size()<< " size of rechits " << (*rechitvec).size()<<std::endl;
+  //std::cout<<" size of gen hits "<< (*genvec).size()<< " size of rechits " << (*rechitvec).size()<<std::endl;
 
   if(debug) std::cout<<"writing files"<<std::endl;
 

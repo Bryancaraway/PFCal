@@ -39,6 +39,12 @@ DetectorConstruction::DetectorConstruction(G4int ver, G4int mod,
 {
 
   doHF_ = false;
+  doUPS_ = false;
+  if(version_== v_HGCAL_v8_ups) {
+    doUPS_=true;
+    m_UPS_z0=50;
+    std::cout<<" putting mockup of tracker material in front of calorimeter"<<std::endl;
+  }
   firstHFlayer_ = 9999;
   firstMixedlayer_ = 9999;
   firstScintlayer_ = 9999;
@@ -324,7 +330,7 @@ DetectorConstruction::DetectorConstruction(G4int ver, G4int mod,
 	break;
       }
 
-    case v_HGCALEE_v8: case v_HGCAL_v8:
+    case v_HGCALEE_v8: case v_HGCAL_v8: case v_HGCAL_v8_ups:
       {
 
 	G4cout << "[DetectorConstruction] starting v_HGCAL(EE)_v8"<< G4endl;
@@ -401,7 +407,7 @@ DetectorConstruction::DetectorConstruction(G4int ver, G4int mod,
 	  m_minEta.push_back(m_minEta0);m_maxEta.push_back(m_maxEta0);
 	}
 	
-	if(version_==v_HGCAL_v8){
+	if(version_==v_HGCAL_v8 || version_==v_HGCAL_v8_ups){
 	  //add HCAL
 	  //FH = FH+BH silicon version = 24 layers
 	  buildHGCALFHE(8);
@@ -719,7 +725,7 @@ void DetectorConstruction::buildHGCALFHE(const unsigned aVersion){
   if (aVersion==8){
     G4double airThick = 1.5*mm;
     G4double pcbThick = 1.6*mm;
-    if (version_==v_HGCAL_v8){
+    if (version_==v_HGCAL_v8 || version_==v_HGCAL_v8_ups){
       //back of ecal
       lThick.push_back(pcbThick);lEle.push_back("PCB");
       lThick.push_back(airThick);lEle.push_back("Air");
@@ -1021,6 +1027,245 @@ void DetectorConstruction::buildHGCALBHE(const unsigned aVersion){
   }
 }
 
+// rough tracker construstion with concentric tubes of silicon
+
+void DetectorConstruction::buildUPS(G4LogicalVolume* hall) { 
+  std::cout<<"building material upstream of calorimeter"<<std::endl;
+  
+  // inner tracker
+  /*
+  G4VSolid *solid1;
+  solid1 = new G4Tubs("t1",244.48,250,525,0.,2.*pi);
+  G4LogicalVolume *logi1 = new G4LogicalVolume(solid1,m_materials["Si"],"t1log");
+  G4PVPlacement *tmp1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,525.),logi1,"t1phys",hall,false, 0);
+  G4VisAttributes *cat1 = new G4VisAttributes(G4Colour::White);
+  cat1->SetVisibility(true);
+  cat1->SetForceSolid(true);
+  logi1->SetVisAttributes(cat1);
+
+  G4VSolid *solid2;
+  solid2 = new G4Tubs("t2",364.48,370,525,0.,2.*pi);
+  G4LogicalVolume *logi2 = new G4LogicalVolume(solid2,m_materials["Si"],"t2log");
+  G4PVPlacement *tmp2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,525.),logi2,"t2phys",hall,false, 0);
+  G4VisAttributes *cat2 = new G4VisAttributes(G4Colour::White);
+  cat2->SetVisibility(true);
+  cat2->SetForceSolid(true);
+  logi2->SetVisAttributes(cat2);
+
+  G4VSolid *solid3;
+  solid3 = new G4Tubs("t3",484.48,490,525,0.,2.*pi);
+  G4LogicalVolume *logi3 = new G4LogicalVolume(solid3,m_materials["Si"],"t3log");
+  G4PVPlacement *tmp3 = new G4PVPlacement(0,G4ThreeVector(0.,0.,525.),logi3,"t3phys",hall,false, 0);
+  G4VisAttributes *cat3 = new G4VisAttributes(G4Colour::White);
+  cat3->SetVisibility(true);
+  cat3->SetForceSolid(true);
+  logi3->SetVisAttributes(cat3);
+
+  G4VSolid *solid4;
+  solid4 = new G4Tubs("t4",704.48,710,525,0.,2.*pi);
+  G4LogicalVolume *logi4 = new G4LogicalVolume(solid4,m_materials["Si"],"t4log");
+  G4PVPlacement *tmp4 = new G4PVPlacement(0,G4ThreeVector(0.,0.,525.),logi4,"t4phys",hall,false, 0);
+  G4VisAttributes *cat4 = new G4VisAttributes(G4Colour::White);
+  cat4->SetVisibility(true);
+  cat4->SetForceSolid(true);
+  logi4->SetVisAttributes(cat4);
+
+  G4VSolid *solid5;
+  solid5 = new G4Tubs("t5",904.48,910,525,0.,2.*pi);
+  G4LogicalVolume *logi5 = new G4LogicalVolume(solid5,m_materials["Si"],"t5log");
+  G4PVPlacement *tmp5 = new G4PVPlacement(0,G4ThreeVector(0.,0.,525.),logi5,"t5phys",hall,false, 0);
+  G4VisAttributes *cat5 = new G4VisAttributes(G4Colour::White);
+  cat5->SetVisibility(true);
+  cat5->SetForceSolid(true);
+  logi5->SetVisAttributes(cat5);
+
+  G4VSolid *solid6;
+  solid6 = new G4Tubs("t6",1104.48,1110,525,0.,2.*pi);
+  G4LogicalVolume *logi6 = new G4LogicalVolume(solid6,m_materials["Si"],"t6log");
+  G4PVPlacement *tmp6 = new G4PVPlacement(0,G4ThreeVector(0.,0.,525.),logi6,"t6phys",hall,false, 0);
+  G4VisAttributes *cat6 = new G4VisAttributes(G4Colour::White);
+  cat6->SetVisibility(true);
+  cat6->SetForceSolid(true);
+  logi6->SetVisAttributes(cat6);
+
+  // pixel 
+  
+  G4VSolid *solid7;
+  solid7 = new G4Tubs("t7",36.4,40,125,0.,2.*pi);
+  G4LogicalVolume *logi7 = new G4LogicalVolume(solid7,m_materials["Si"],"t7log");
+  G4PVPlacement *tmp7 = new G4PVPlacement(0,G4ThreeVector(0.,0.,125.),logi7,"t7phys",hall,false, 0);
+  G4VisAttributes *cat7 = new G4VisAttributes(G4Colour::White);
+  cat7->SetVisibility(true);
+  cat7->SetForceSolid(true);
+  logi7->SetVisAttributes(cat7);
+
+  G4VSolid *solid8;
+  solid8 = new G4Tubs("t8",76.4,80,125,0.,2.*pi);
+  G4LogicalVolume *logi8 = new G4LogicalVolume(solid8,m_materials["Si"],"t8log");
+  G4PVPlacement *tmp8 = new G4PVPlacement(0,G4ThreeVector(0.,0.,125.),logi8,"t8phys",hall,false, 0);
+  G4VisAttributes *cat8 = new G4VisAttributes(G4Colour::White);
+  cat8->SetVisibility(true);
+  cat8->SetForceSolid(true);
+  logi8->SetVisAttributes(cat8);
+
+  G4VSolid *solid9;
+  solid9 = new G4Tubs("t9",116.4,120,125,0.,2.*pi);
+  G4LogicalVolume *logi9 = new G4LogicalVolume(solid9,m_materials["Si"],"t9log");
+  G4PVPlacement *tmp9 = new G4PVPlacement(0,G4ThreeVector(0.,0.,125.),logi9,"t9phys",hall,false, 0);
+  G4VisAttributes *cat9 = new G4VisAttributes(G4Colour::White);
+  cat9->SetVisibility(true);
+  cat9->SetForceSolid(true);
+  logi9->SetVisAttributes(cat9);
+
+  G4VSolid *solid10;
+  solid10 = new G4Tubs("t10",156.4,160,125,0.,2.*pi);
+  G4LogicalVolume *logi10 = new G4LogicalVolume(solid10,m_materials["Si"],"t10log");
+  G4PVPlacement *tmp10 = new G4PVPlacement(0,G4ThreeVector(0.,0.,125.),logi10,"t10phys",hall,false, 0);
+  G4VisAttributes *cat10 = new G4VisAttributes(G4Colour::White);
+  cat10->SetVisibility(true);
+  cat10->SetForceSolid(true);
+  logi10->SetVisAttributes(cat10);
+
+  G4VSolid *solid11;
+  solid11 = new G4Tubs("t11",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi11 = new G4LogicalVolume(solid11,m_materials["Si"],"t11log");
+  G4PVPlacement *tmp11 = new G4PVPlacement(0,G4ThreeVector(0.,0.,300.),logi11,"t11phys",hall,false, 0);
+  G4VisAttributes *cat11 = new G4VisAttributes(G4Colour::White);
+  cat11->SetVisibility(true);
+  cat11->SetForceSolid(true);
+  logi11->SetVisAttributes(cat11);
+
+  G4VSolid *solid12;
+  solid12 = new G4Tubs("t12",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi12 = new G4LogicalVolume(solid12,m_materials["Si"],"t12log");
+  G4PVPlacement *tmp12 = new G4PVPlacement(0,G4ThreeVector(0.,0.,400.),logi12,"t12phys",hall,false, 0);
+  G4VisAttributes *cat12 = new G4VisAttributes(G4Colour::White);
+  cat12->SetVisibility(true);
+  cat12->SetForceSolid(true);
+  logi12->SetVisAttributes(cat12);
+
+  G4VSolid *solid13;
+  solid13 = new G4Tubs("t13",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi13 = new G4LogicalVolume(solid13,m_materials["Si"],"t13log");
+  G4PVPlacement *tmp13 = new G4PVPlacement(0,G4ThreeVector(0.,0.,500.),logi13,"t13phys",hall,false, 0);
+  G4VisAttributes *cat13 = new G4VisAttributes(G4Colour::White);
+  cat13->SetVisibility(true);
+  cat13->SetForceSolid(true);
+  logi13->SetVisAttributes(cat13);
+
+  G4VSolid *solid14;
+  solid14 = new G4Tubs("t14",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi14 = new G4LogicalVolume(solid14,m_materials["Si"],"t14log");
+  G4PVPlacement *tmp14 = new G4PVPlacement(0,G4ThreeVector(0.,0.,650.),logi14,"t14phys",hall,false, 0);
+  G4VisAttributes *cat14 = new G4VisAttributes(G4Colour::White);
+  cat14->SetVisibility(true);
+  cat14->SetForceSolid(true);
+  logi14->SetVisAttributes(cat14);
+
+  G4VSolid *solid15;
+  solid15 = new G4Tubs("t15",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi15 = new G4LogicalVolume(solid15,m_materials["Si"],"t15log");
+  G4PVPlacement *tmp15 = new G4PVPlacement(0,G4ThreeVector(0.,0.,850.),logi15,"t15phys",hall,false, 0);
+  G4VisAttributes *cat15 = new G4VisAttributes(G4Colour::White);
+  cat15->SetVisibility(true);
+  cat15->SetForceSolid(true);
+  logi15->SetVisAttributes(cat15);
+  
+  G4VSolid *solid16;
+  solid16 = new G4Tubs("t16",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi16 = new G4LogicalVolume(solid16,m_materials["Si"],"t16log");
+  G4PVPlacement *tmp16 = new G4PVPlacement(0,G4ThreeVector(0.,0.,1600.),logi16,"t16phys",hall,false, 0);
+  G4VisAttributes *cat16 = new G4VisAttributes(G4Colour::White);
+  cat16->SetVisibility(true);
+  cat16->SetForceSolid(true);
+  logi16->SetVisAttributes(cat16);
+
+  G4VSolid *solid17;
+  solid17 = new G4Tubs("t17",40,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi17 = new G4LogicalVolume(solid17,m_materials["Si"],"t17log");
+  G4PVPlacement *tmp17 = new G4PVPlacement(0,G4ThreeVector(0.,0.,1400.),logi17,"t17phys",hall,false, 0);
+  G4VisAttributes *cat17 = new G4VisAttributes(G4Colour::White);
+  cat17->SetVisibility(true);
+  cat17->SetForceSolid(true);
+  logi17->SetVisAttributes(cat17);
+
+  G4VSolid *solid18;
+  solid18 = new G4Tubs("t18",100,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi18 = new G4LogicalVolume(solid18,m_materials["Si"],"t18log");
+  G4PVPlacement *tmp18 = new G4PVPlacement(0,G4ThreeVector(0.,0.,2000.),logi18,"t18phys",hall,false, 0);
+  G4VisAttributes *cat18 = new G4VisAttributes(G4Colour::White);
+  cat18->SetVisibility(true);
+  cat18->SetForceSolid(true);
+  logi18->SetVisAttributes(cat18);
+
+  G4VSolid *solid19;
+  solid19 = new G4Tubs("t19",100,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi19 = new G4LogicalVolume(solid19,m_materials["Si"],"t19log");
+  G4PVPlacement *tmp19 = new G4PVPlacement(0,G4ThreeVector(0.,0.,2300.),logi19,"t19phys",hall,false, 0);
+  G4VisAttributes *cat19 = new G4VisAttributes(G4Colour::White);
+  cat19->SetVisibility(true);
+  cat19->SetForceSolid(true);
+  logi19->SetVisAttributes(cat19);
+
+  G4VSolid *solid20;
+  solid20 = new G4Tubs("t20",100,160,1.80,0.,2.*pi);
+  G4LogicalVolume *logi20 = new G4LogicalVolume(solid20,m_materials["Si"],"t20log");
+  G4PVPlacement *tmp20 = new G4PVPlacement(0,G4ThreeVector(0.,0.,2650.),logi20,"t20phys",hall,false, 0);
+  G4VisAttributes *cat20 = new G4VisAttributes(G4Colour::White);
+  cat20->SetVisibility(true);
+  cat20->SetForceSolid(true);
+  logi20->SetVisAttributes(cat20);
+
+  // outer tracker
+
+  G4VSolid *solid21;
+  solid21 = new G4Tubs("t21",250,1100,5.52,0.,2.*pi);
+  G4LogicalVolume *logi21 = new G4LogicalVolume(solid21,m_materials["Si"],"t21log");
+  G4PVPlacement *tmp21 = new G4PVPlacement(0,G4ThreeVector(0.,0.,1300.),logi21,"t21phys",hall,false, 0);
+  G4VisAttributes *cat21 = new G4VisAttributes(G4Colour::White);
+  cat21->SetVisibility(true);
+  cat21->SetForceSolid(true);
+  logi21->SetVisAttributes(cat21);
+
+   G4VSolid *solid22;
+  solid22 = new G4Tubs("t22",250,1100,5.52,0.,2.*pi);
+  G4LogicalVolume *logi22 = new G4LogicalVolume(solid22,m_materials["Si"],"t22log");
+  G4PVPlacement *tmp22 = new G4PVPlacement(0,G4ThreeVector(0.,0.,1500.),logi22,"t22phys",hall,false, 0);
+  G4VisAttributes *cat22 = new G4VisAttributes(G4Colour::White);
+  cat22->SetVisibility(true);
+  cat22->SetForceSolid(true);
+  logi22->SetVisAttributes(cat22);
+  
+   G4VSolid *solid23;
+  solid23 = new G4Tubs("t23",250,1100,5.52,0.,2.*pi);
+  G4LogicalVolume *logi23 = new G4LogicalVolume(solid23,m_materials["Si"],"t23log");
+  G4PVPlacement *tmp23 = new G4PVPlacement(0,G4ThreeVector(0.,0.,1900.),logi23,"t23phys",hall,false, 0);
+  G4VisAttributes *cat23 = new G4VisAttributes(G4Colour::White);
+  cat23->SetVisibility(true);
+  cat23->SetForceSolid(true);
+  logi23->SetVisAttributes(cat23);
+
+   G4VSolid *solid24;
+  solid24 = new G4Tubs("t24",250,1100,5.52,0.,2.*pi);
+  G4LogicalVolume *logi24 = new G4LogicalVolume(solid24,m_materials["Si"],"t24log");
+  G4PVPlacement *tmp24 = new G4PVPlacement(0,G4ThreeVector(0.,0.,2250.),logi24,"t24phys",hall,false, 0);
+  G4VisAttributes *cat24 = new G4VisAttributes(G4Colour::White);
+  cat24->SetVisibility(true);
+  cat24->SetForceSolid(true);
+  logi24->SetVisAttributes(cat24);
+
+   G4VSolid *solid25;
+  solid25 = new G4Tubs("t25",250,1100,5.52,0.,2.*pi);
+  G4LogicalVolume *logi25 = new G4LogicalVolume(solid25,m_materials["Si"],"t25log");
+  G4PVPlacement *tmp25 = new G4PVPlacement(0,G4ThreeVector(0.,0.,2650.),logi25,"t25phys",hall,false, 0);
+  G4VisAttributes *cat25 = new G4VisAttributes(G4Colour::White);
+  cat25->SetVisibility(true);
+  cat25->SetForceSolid(true);
+  logi25->SetVisAttributes(cat25);
+  */
+  return;
+}
+
 void DetectorConstruction::buildHF(){
   firstHFlayer_ = m_caloStruct.size();
   G4double airThick = 4*mm;
@@ -1234,7 +1479,7 @@ void DetectorConstruction::UpdateCalorSize(){
     m_CalorSizeXY=2800*2;//use full length for making hexagon map
     m_minRadius = 150;
     m_maxRadius = m_CalorSizeXY;
-    if (version_ != v_HGCAL_v8 && version_ != v_HGCALEE_v8) {
+    if (version_ != v_HGCAL_v8 && version_ != v_HGCALEE_v8 && version_ != v_HGCAL_v8_ups) {
       m_minEta.resize(m_caloStruct.size(),m_minEta0);
       m_maxEta.resize(m_caloStruct.size(),m_maxEta0);
     }
@@ -1245,7 +1490,7 @@ void DetectorConstruction::UpdateCalorSize(){
     m_z0pos = 2990;//3170;
     if (version_ == v_HGCALEE_v5 || version_ == v_HGCAL_v5 || version_ == v_HGCALEE_v5_gap4 || version_ == v_HGCAL_v5_gap4) m_z0pos = 2990;//3170;
     else if (version_ == v_HGCALEE_v6 || version_ == v_HGCAL_v6 || version_ == v_HGCALEE_v7 || version_ == v_HGCAL_v7 || version_ == v_HGCAL_v7_HF ||version_ == v_HGCALEE_v624 || version_ == v_HGCALEE_v618) m_z0pos = 3070;
-    else if (version_ == v_HGCALEE_v8 || version_ == v_HGCAL_v8) m_z0pos = 2980;
+    else if (version_ == v_HGCALEE_v8 || version_ == v_HGCAL_v8 || version_==v_HGCAL_v8_ups) m_z0pos = 2980;
     if (doHF_){
       m_z0HF=11100;
       m_CalorSizeZ=m_z0HF-m_z0pos+HFsize;
@@ -1345,6 +1590,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     buildSectorStack(iS,minL,m_sectorWidth-m_interSectorWidth);
     if (m_nSectors>1) fillInterSectorSpace(iS,minL+m_sectorWidth-m_interSectorWidth,m_interSectorWidth);
   }
+  if(doUPS_) {
+    buildUPS(experimentalHall_log);
+  }
+
+
+
   // Visualization attributes
   //
   m_logicWorld->SetVisAttributes(G4VisAttributes::Invisible);
@@ -1472,7 +1723,7 @@ void DetectorConstruction::buildSectorStack(const unsigned sectorNum,
       }//loop on elements
 
       //add support cone, for EE only
-      if (i<28 && (version_ == v_HGCALEE_v6 || version_ ==  v_HGCAL_v6 || version_ == v_HGCALEE_v7 || version_ ==  v_HGCAL_v7 || version_ == v_HGCALEE_v8 || version_ ==  v_HGCAL_v8)) {
+      if (i<28 && (version_ == v_HGCALEE_v6 || version_ ==  v_HGCAL_v6 || version_ == v_HGCALEE_v7 || version_ ==  v_HGCAL_v7 || version_ == v_HGCALEE_v8 || version_ ==  v_HGCAL_v8 || version_==v_HGCAL_v8_ups)) {
 	//remove support cone for moderator
 	//if (i==0) {
 	//totalThicknessLayer -= 100;
