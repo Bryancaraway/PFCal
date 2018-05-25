@@ -292,14 +292,7 @@ int main(int argc, char** argv){//main
   /////////////////////////
   //Bryans analysis stuff//
   /////////////////////////
-  TProfile* h_el = new TProfile("h_el","energy per layer",52,0,52);
-  TProfile* h_el_off = new TProfile("h_el_off","energy per layer",52,0,52);
-  TProfile* h_elw = new TProfile("h_elw","mip per layer",52,0,52);
-  TProfile* h_elw_off = new TProfile("h_elw_off","mip per layer",52,0,52);
-  //TProfile* h_ezw = new TProfile("h_ezw","mip vs z",5200,0,5200);
-  //TProfile* h_ezw_off = new TProfile("h_ezw","mip vs z",5200,0,5200);
-
-
+ 
 
   TH2Poly* map_1 = new TH2Poly();
   //map_1->Honeycomb(-2803.17,-2790.5,6.49635,575,497);
@@ -339,7 +332,7 @@ int main(int argc, char** argv){//main
   double rbins3[74];
   TH2F* map_TH2F_2[4];
   TH2F* map_TH2F_3[12];
-  double z_layer[69]={
+  Float_t z_layer[]={
     3198.0,    3207.1,    3222.4,    3231.5,    3246.8,
     3255.9,    3271.2,    3280.3,    3295.6,    3304.7,
     3320.0,    3329.1,    3344.4,    3353.5,    3368.8,
@@ -404,6 +397,52 @@ int main(int argc, char** argv){//main
     std::cout<<r_cut[i_test]<<" for layer "<<i_test<<std::endl;
   };
   */
+
+  TProfile* h_el = new TProfile("h_el","energy per layer",52,0,52);
+  TProfile* h_el_off = new TProfile("h_el_off","energy per layer",52,0,52);
+  TProfile* h_elw = new TProfile("h_elw","mip per layer",52,0,52);
+  TProfile* h_elw_off = new TProfile("h_elw_off","mip per layer",52,0,52);
+  double lambins[69] = {
+    .246, .062, .032, .062, .032, .062, .032, .062, .032, .062,
+    .032, .062, .032, .062, .032, .062, .032, .062, .032, .062,
+    .032, .062, .032, .062, .032, .062, .032, .062, .292, .262,
+    .262, .262, .262, .262, .262, .262, .262, .262, .262, .262,
+    .461, .461, .461, .461, .461, .461, .461, .461, .461, .461,
+    .461, .461, .572, .256, .256, .256, .256, .455, .455, .455,
+    .455, .455, .455, .455, .455, .455, .455, .455, .455}; // radiation length in lambda per layer 
+
+  double lambda[69] = {0};
+
+  for (int i = 0 ; i <= 68 ; i++){
+    lambda[i] = lambins [i];
+    if (i > 0) lambins[i] += lambins[i-1];
+  }
+  
+  Float_t z_layer2[]={
+    3198.0,    3207.1,    3222.4,    3231.5,    3246.8,
+    3255.9,    3271.2,    3280.3,    3295.6,    3304.7,
+    3320.0,    3329.1,    3344.4,    3353.5,    3368.8,
+    3377.9,    3393.2,    3402.3,    3417.6,    3426.7,
+    3442.0,    3451.1,    3466.4,    3475.5,    3490.8,
+    3499.9,    3515.2,    3524.3,    3577.4,    3626.4,
+    3675.4,    3724.4,    3773.4,    3822.4,    3871.4,
+    3920.4,    3969.4,    4020.3,    4071.2,    4122.1,
+    4206.0,    4289.9,    4373.8,    4457.7,    4541.6,
+    4625.5,    4709.4,    4793.3,    4877.2,    4961.1,
+    5045.0,    5128.9};
+
+  TProfile* h_elam = new TProfile("h_elam","mip vs lam",68,lambins);
+  TProfile* h_elam_off = new TProfile("h_elam_off","mip vs lam",68,lambins);
+  TProfile* h_elam2 = new TProfile("h_elam2","dE/dlambda vs lambda",68,lambins);
+
+  Int_t binnum = sizeof(z_layer2)/sizeof(Float_t)-1;
+  TProfile* h_ezW = new TProfile("h_ezW","mip vs z",binnum,z_layer2);
+  TProfile* h_ezW_off = new TProfile("h_ezW_off","mip vs z",binnum,z_layer2);
+
+  //std::cout<<"accumilated radiation length in lambda per layer is: "<<std::endl;
+  //for (int i = 1 ; i <= 68 ; i++){
+  //  std::cout<<lambins[i]<<" for layer: "<<i<<std::endl;
+  //}
 
   TH1F* h_egenreco_cut = new TH1F("h_egenreco_cut","E reco sum over gen",100,0.,2.);
   TH1F* h_eta = new TH1F("h_eta","eta of gen particle",120,1.6,2.8);
@@ -691,7 +730,7 @@ int main(int argc, char** argv){//main
     
     //find rmin and rmax of rechits 
 
-    double rmin = 99999;
+    //double rmin = 99999;
     double rmax = -1;
 
     // ---------- Rechit loop starts ----------
@@ -706,7 +745,7 @@ int main(int argc, char** argv){//main
     for (unsigned iH(0); iH<(*rechitvec).size(); ++iH){//loop on hits
       HGCSSRecoHit lHit = (*rechitvec)[iH];
       double leta = lHit.eta();
-      double lphi = lHit.phi();
+      //double lphi = lHit.phi();
       //std::cout<<"getting layer"<<std::endl;
       unsigned layer = lHit.layer();
       if (lHit.energy()>MaxE) {MaxE=lHit.energy(); iMax=iH;}
@@ -816,7 +855,7 @@ int main(int argc, char** argv){//main
 	}
       */
 
-      int ilayer = ixx;
+      //int ilayer = ixx;
 
       // added in zx comps. Bryan//////
       /*
@@ -1161,7 +1200,7 @@ int main(int argc, char** argv){//main
 
       TH2Poly *map = isScint?(subdet.type==DetectorEnum::BHCAL1?geomConv.squareMap1():geomConv.squareMap2()): shape==4?geomConv.squareMap() : shape==2?geomConv.diamondMap() : shape==3? geomConv.triangleMap(): geomConv.hexagonMap();
 
-      unsigned cellid = map->FindBin(lHit.get_x(),lHit.get_y());
+      //unsigned cellid = map->FindBin(lHit.get_x(),lHit.get_y());
 
       //
       //KH - make a map for selected rechits around gen pions and low noise fraction
@@ -1289,7 +1328,12 @@ int main(int argc, char** argv){//main
     for(int ilayer = 0 ; ilayer < 52 ; ++ilayer){
       h_el_off->Fill(ilayer+0.5,tempPenergy[ilayer]); // tprofile with no offset  
       h_elw_off->Fill(ilayer+0.5,tempWenergy[ilayer]);
-    //printf("tempPenergy[%d] = %f \t penergy[%d] = %f \n", ilayer, tempPenergy[ilayer],ilayer,penergy[ilayer]);
+      h_elam->Fill(lambins[ilayer],penergy[ilayer]);
+      h_elam_off->Fill(lambins[ilayer],tempPenergy[ilayer]);
+      h_elam2->Fill(lambins[ilayer],tempPenergy[ilayer]*2./(lambda[ilayer]+lambda[ilayer+1]));
+      h_ezW->Fill(z_layer[ilayer],rechitsumNoW[ilayer]);
+      h_ezW_off->Fill(z_layer[ilayer],tempWenergy[ilayer]);
+      //printf("tempPenergy[%d] = %f \t lambins[%d] = %f \n", ilayer, tempPenergy[ilayer],ilayer,lambins[ilayer]);
     }
     //std::cout<<"at eta gen. "<<etagen<<", the lost energy and hits are "<<rechitsum_lost<<" and "<<lostHit<<" respectively."<<std::endl;
 
@@ -1359,7 +1403,7 @@ int main(int argc, char** argv){//main
     
     h_banana->Fill(rechitsumE03-rechitBHsumE03,rechitBHsumE03); // added from sarah's code
     double frac =-0.05; // from sarah
-    double notBH=rechitsumE03-rechitBHsumE03; // from sarah unused 
+    //double notBH=rechitsumE03-rechitBHsumE03; // from sarah unused 
     if(rechitsumE03>0) frac=rechitBHsumE03/rechitsumE03; // from sarah
     h_fracBH->Fill(frac); // from sarah
 
@@ -1428,11 +1472,11 @@ int main(int argc, char** argv){//main
       double dR=DeltaR(etaaxis,phiaxis,eta,phi);
 
       if (!isScint){ // si
-	DetectorEnum adet = subdet.type;
+	//DetectorEnum adet = subdet.type;
 	unsigned adc = 0;
-	double digiE;
+	//double digiE = 0;
 	adc = myDigitiser.adcConverter(energy,type);
-	digiE = myDigitiser.adcToMIP(adc,type);	
+	//digiE = myDigitiser.adcToMIP(adc,type);	
 	if (adc<5) continue;                // ADC cut on silicon hits
       } else {
 	if (energy<0.5) continue;           // MIP cut (>=0.5MIP) on scintilator hits
