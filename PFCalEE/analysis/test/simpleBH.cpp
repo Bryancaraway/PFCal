@@ -27,6 +27,8 @@
 #include "TMatrixD.h"
 #include "TMatrixDSym.h"
 #include "TVectorD.h"
+#include "TVector3.h"
+#include "TLorentzVector.h"
 #include "TPaletteAxis.h"
 #include "TColor.h"
 #include "TROOT.h"
@@ -279,16 +281,16 @@ int main(int argc, char** argv){//main
 
   double energy_max=-1.;
 
-  TH1F* h_energy = new TH1F("h_energy","hit energy",1000,0.,5.);
-  TH1F* h_z = new TH1F("h_z","z of hit",5000,3100.,5200);
-  TH1F* h_z1 = new TH1F("h_z1","z of hit",5000,3150.,3550);
-  TH1F* h_z2 = new TH1F("h_z2","z of hit",5000,3550.,5200);
-  TH2F* h_xy = new TH2F("h_xy","xy of hit",1000,-2000,2000,1000,-2000,2000);
-  TH2F* h_etaphi = new TH2F("h_etaphi","etaphi of hit",1000,1,3.5,1000,-7,7);
+  //TH1F* h_energy = new TH1F("h_energy","hit energy",1000,0.,5.);
+  //TH1F* h_z = new TH1F("h_z","z of hit",5000,3100.,5200);
+  //TH1F* h_z1 = new TH1F("h_z1","z of hit",5000,3150.,3550);
+  //TH1F* h_z2 = new TH1F("h_z2","z of hit",5000,3550.,5200);
+  //TH2F* h_xy = new TH2F("h_xy","xy of hit",1000,-2000,2000,1000,-2000,2000);
+  //TH2F* h_etaphi = new TH2F("h_etaphi","etaphi of hit",1000,1,3.5,1000,-7,7);
   TH2F* h_getaphi = new TH2F("h_getaphi","gen part etaphi of hit",1000,1,3.5,1000,-7,7);
-  TH1F* h_l = new TH1F("h_l","layer of hit",80,0.,80.);
-  TH1F* h_l2 = new TH1F("h_l2","layer of hit",30,50,80.);
-  TH2F* h_zl = new TH2F("h_zl","z vs l of hit",5000,4300.,5200,25,30.,55.);
+  //TH1F* h_l = new TH1F("h_l","layer of hit",80,0.,80.);
+  //TH1F* h_l2 = new TH1F("h_l2","layer of hit",30,50,80.);
+  //TH2F* h_zl = new TH2F("h_zl","z vs l of hit",5000,4300.,5200,25,30.,55.);
   /////////////////////////
   //Bryans analysis stuff//
   /////////////////////////
@@ -328,10 +330,10 @@ int main(int argc, char** argv){//main
 
   //---- xmin = 1.4, ymin = -3.14159 side = 0.01745, nx = 91, ny=360
   //---- xmin = 1.4, ymin = -3.14159 side = 0.02182, nx = 73, ny=287
-  double rbins2[92];
-  double rbins3[74];
-  TH2F* map_TH2F_2[4];
-  TH2F* map_TH2F_3[12];
+  //double rbins2[92];
+  //double rbins3[74];
+  //TH2F* map_TH2F_2[4];
+  //TH2F* map_TH2F_3[12];
   Float_t z_layer[]={
     3198.0,    3207.1,    3222.4,    3231.5,    3246.8,
     3255.9,    3271.2,    3280.3,    3295.6,    3304.7,
@@ -363,13 +365,13 @@ int main(int argc, char** argv){//main
   // BH fine part
   for (int ilayer=36;ilayer<=39;ilayer++){
     int ilayer_org=ilayer+17;
-    for (int ibin=0;ibin<=91;ibin++){
-      double eta=1.4+double(ibin)*0.01745;
-      double z = z_layer[ilayer_org];
-      rbins2[91-ibin]=z*tan(2.*atan(exp(-eta))); 
-    }    
+    //for (int ibin=0;ibin<=91;ibin++){
+    //  double eta=1.4+double(ibin)*0.01745;
+    //  double z = z_layer[ilayer_org];
+    //  rbins2[91-ibin]=z*tan(2.*atan(exp(-eta))); 
+    //}    
     sprintf(title,"map_TH2F_2_%d",ilayer);
-    map_TH2F_2[ilayer-36] = new TH2F(title,title,360,-1.*TMath::Pi(),3.1404,91,rbins2);
+    //map_TH2F_2[ilayer-36] = new TH2F(title,title,360,-1.*TMath::Pi(),3.1404,91,rbins2);
     double eta_tmp=1.4+double(eta_index[ilayer_org]-bin_exclude)*0.01745;
     double eta_tmp2=1.4+double(eta_index[ilayer_org])*0.01745;// to print out the boundary 
     double z_tmp = z_layer[ilayer_org];
@@ -379,13 +381,13 @@ int main(int argc, char** argv){//main
   // BH coarse part
   for (int ilayer=40;ilayer<=51;ilayer++){
     int ilayer_org=ilayer+17;
-    for (int ibin=0;ibin<=73;ibin++){
-      double eta=1.4+double(ibin)*0.02182;
-      double z = z_layer[ilayer_org];
-      rbins3[73-ibin]=z*tan(2.*atan(exp(-eta)));    
-    }    
+    //for (int ibin=0;ibin<=73;ibin++){
+    //  double eta=1.4+double(ibin)*0.02182;
+    //  double z = z_layer[ilayer_org];
+    //  rbins3[73-ibin]=z*tan(2.*atan(exp(-eta)));    
+    //}    
     sprintf(title,"map_TH2F_3_%d",ilayer);
-    map_TH2F_3[ilayer-40] = new TH2F(title,title,287,-1.*TMath::Pi(),1.*TMath::Pi(),73,rbins3);
+    //map_TH2F_3[ilayer-40] = new TH2F(title,title,287,-1.*TMath::Pi(),1.*TMath::Pi(),73,rbins3);
     double eta_tmp=1.4+double(eta_index[ilayer_org]-bin_exclude)*0.02182;
     double eta_tmp2=1.4+double(eta_index[ilayer_org])*0.02182;// to print out the boundary 
     double z_tmp = z_layer[ilayer_org];
@@ -455,34 +457,48 @@ int main(int argc, char** argv){//main
   TH1F* h_egenreco_rare = new TH1F("h_egenreco_rare"," E reco sum over gen",100,0,2);
   TH1F* h_egenreco_rare_cut = new TH1F("h_egenreco_rare_cut"," E reco sum over gen",100,0,2);
   TH1F* h_ScintoverSi = new TH1F("h_ScintoverSi","E Scint over E Si",200,0,2);
-  
+  TH2F* h_tailEvents = new TH2F("h_tailEvents","ECone/ETot vs ECone/Egen",100,0,.2,100,0,.2);
+  TProfile* h_elostoveregen = new TProfile("h_elostoveregen","ELost/Egen vs Eta",24,1.6,2.8,0,100);
+  TH2F* h_correction = new TH2F("h_correction","ECone vs E Dead Ring",100,0,200,100,0,200);
+  TH2F* h_EtotvsEgen = new TH2F("h_EtotvsEgen","ETot vs EGen",250,0,250,250,0,250);
+  TH1F* h_EtotoverEgen = new TH1F("h_EtotoverEgen","Total reco Energy over Egen",100,0,2);
+  TH1F* h_dRcounts = new TH1F("h_dRcounts","number rechits vs dR",340,0,3.4); 
+  TProfile* h_EvsdeltaR = new TProfile("h_EvsdeltaR","E reco vs delta R",340,0,3.4);
+  TProfile* h_EsumvsdeltaR = new TProfile("h_EsumvsdeltaR","E recosum vs delta R",40,0,1);
+  TProfile* h_EvsdeltaRtail = new TProfile("h_EvsdeltaRtail","E reco vs delta R in the tail",340,0,3.4);
+  TH2F* h_gentracks = new TH2F("h_gentracks","R vs Z",520,0,5200,520,0,5200);
+
+
   // eta vs reso 
-  TH1F* h_egenreco1617 = new TH1F("h_egenreco1617"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
-  TH1F* h_egenreco1718 = new TH1F("h_egenreco1718"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
-  TH1F* h_egenreco1819 = new TH1F("h_egenreco1819"," ErecoSum over Egen, eta 1.8-1.9",100,0.,2.);
-  TH1F* h_egenreco1920 = new TH1F("h_egenreco1920"," ErecoSum over Egen, eta 1.9-2.0",100,0.,2.);
-  TH1F* h_egenreco2021 = new TH1F("h_egenreco2021"," ErecoSum over Egen, eta 2.0-2.1",100,0.,2.);
-  TH1F* h_egenreco2122 = new TH1F("h_egenreco2122"," ErecoSum over Egen, eta 2.1-2.2",100,0.,2.);
-  TH1F* h_egenreco2223 = new TH1F("h_egenreco2223"," ErecoSum over Egen, eta 2.2-2.3",100,0.,2.);
-  TH1F* h_egenreco2324 = new TH1F("h_egenreco2324"," ErecoSum over Egen, eta 2.3-2.4",100,0.,2.);
-  TH1F* h_egenreco2425 = new TH1F("h_egenreco2425"," ErecoSum over Egen, eta 2.4-2.5",100,0.,2.);
-  TH1F* h_egenreco2526 = new TH1F("h_egenreco2526"," ErecoSum over Egen, eta 2.5-2.6",100,0.,2.);
-  TH1F* h_egenreco2627 = new TH1F("h_egenreco2627"," ErecoSum over Egen, eta 2.6-2.7",100,0.,2.);
-  TH1F* h_egenreco2728 = new TH1F("h_egenreco2728"," ErecoSum over Egen, eta 2.7-2.8",100,0.,2.);
-
-  TH1F* h_egenreco1617_cut = new TH1F("h_egenreco1617_cut"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
-  TH1F* h_egenreco1718_cut = new TH1F("h_egenreco1718_cut"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
-  TH1F* h_egenreco1819_cut = new TH1F("h_egenreco1819_cut"," ErecoSum over Egen, eta 1.8-1.9",100,0.,2.);
-  TH1F* h_egenreco1920_cut = new TH1F("h_egenreco1920_cut"," ErecoSum over Egen, eta 1.9-2.0",100,0.,2.);
-  TH1F* h_egenreco2021_cut = new TH1F("h_egenreco2021_cut"," ErecoSum over Egen, eta 2.0-2.1",100,0.,2.);
-  TH1F* h_egenreco2122_cut = new TH1F("h_egenreco2122_cut"," ErecoSum over Egen, eta 2.1-2.2",100,0.,2.);
-  TH1F* h_egenreco2223_cut = new TH1F("h_egenreco2223_cut"," ErecoSum over Egen, eta 2.2-2.3",100,0.,2.);
-  TH1F* h_egenreco2324_cut = new TH1F("h_egenreco2324_cut"," ErecoSum over Egen, eta 2.3-2.4",100,0.,2.);
-  TH1F* h_egenreco2425_cut = new TH1F("h_egenreco2425_cut"," ErecoSum over Egen, eta 2.4-2.5",100,0.,2.);
-  TH1F* h_egenreco2526_cut = new TH1F("h_egenreco2526_cut"," ErecoSum over Egen, eta 2.5-2.6",100,0.,2.);
-  TH1F* h_egenreco2627_cut = new TH1F("h_egenreco2627_cut"," ErecoSum over Egen, eta 2.6-2.7",100,0.,2.);
-  TH1F* h_egenreco2728_cut = new TH1F("h_egenreco2728_cut"," ErecoSum over Egen, eta 2.7-2.8",100,0.,2.);
-
+  //bool doetaranges = 0;
+  //if (doetaranges)
+  //{
+  //  TH1F* h_egenreco1617     = new TH1F("h_egenreco1617"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
+  //  TH1F* h_egenreco1718     = new TH1F("h_egenreco1718"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
+  //  TH1F* h_egenreco1819     = new TH1F("h_egenreco1819"," ErecoSum over Egen, eta 1.8-1.9",100,0.,2.);
+  //  TH1F* h_egenreco1920     = new TH1F("h_egenreco1920"," ErecoSum over Egen, eta 1.9-2.0",100,0.,2.);
+  //  TH1F* h_egenreco2021     = new TH1F("h_egenreco2021"," ErecoSum over Egen, eta 2.0-2.1",100,0.,2.);
+  //  TH1F* h_egenreco2122     = new TH1F("h_egenreco2122"," ErecoSum over Egen, eta 2.1-2.2",100,0.,2.);
+  //  TH1F* h_egenreco2223     = new TH1F("h_egenreco2223"," ErecoSum over Egen, eta 2.2-2.3",100,0.,2.);
+  //  TH1F* h_egenreco2324     = new TH1F("h_egenreco2324"," ErecoSum over Egen, eta 2.3-2.4",100,0.,2.);
+  //  TH1F* h_egenreco2425     = new TH1F("h_egenreco2425"," ErecoSum over Egen, eta 2.4-2.5",100,0.,2.);
+  //  TH1F* h_egenreco2526     = new TH1F("h_egenreco2526"," ErecoSum over Egen, eta 2.5-2.6",100,0.,2.);
+  //  TH1F* h_egenreco2627     = new TH1F("h_egenreco2627"," ErecoSum over Egen, eta 2.6-2.7",100,0.,2.);
+  //  TH1F* h_egenreco2728     = new TH1F("h_egenreco2728"," ErecoSum over Egen, eta 2.7-2.8",100,0.,2.);
+  //  
+  //  TH1F* h_egenreco1617_cut = new TH1F("h_egenreco1617_cut"," ErecoSum over Egen, eta 1.6-1.7",100,0.,2.);
+  //  TH1F* h_egenreco1718_cut = new TH1F("h_egenreco1718_cut"," ErecoSum over Egen, eta 1.7-1.8",100,0.,2.);
+  //  TH1F* h_egenreco1819_cut = new TH1F("h_egenreco1819_cut"," ErecoSum over Egen, eta 1.8-1.9",100,0.,2.);
+  //  TH1F* h_egenreco1920_cut = new TH1F("h_egenreco1920_cut"," ErecoSum over Egen, eta 1.9-2.0",100,0.,2.);
+  //  TH1F* h_egenreco2021_cut = new TH1F("h_egenreco2021_cut"," ErecoSum over Egen, eta 2.0-2.1",100,0.,2.);
+  //  TH1F* h_egenreco2122_cut = new TH1F("h_egenreco2122_cut"," ErecoSum over Egen, eta 2.1-2.2",100,0.,2.);
+  //  TH1F* h_egenreco2223_cut = new TH1F("h_egenreco2223_cut"," ErecoSum over Egen, eta 2.2-2.3",100,0.,2.);
+  //  TH1F* h_egenreco2324_cut = new TH1F("h_egenreco2324_cut"," ErecoSum over Egen, eta 2.3-2.4",100,0.,2.);
+  //  TH1F* h_egenreco2425_cut = new TH1F("h_egenreco2425_cut"," ErecoSum over Egen, eta 2.4-2.5",100,0.,2.);
+  //  TH1F* h_egenreco2526_cut = new TH1F("h_egenreco2526_cut"," ErecoSum over Egen, eta 2.5-2.6",100,0.,2.);
+  //  TH1F* h_egenreco2627_cut = new TH1F("h_egenreco2627_cut"," ErecoSum over Egen, eta 2.6-2.7",100,0.,2.);
+  //  TH1F* h_egenreco2728_cut = new TH1F("h_egenreco2728_cut"," ErecoSum over Egen, eta 2.7-2.8",100,0.,2.);
+  //}
 
  
   ///end of mapping per layer///
@@ -497,7 +513,7 @@ int main(int argc, char** argv){//main
   TH2F* h_zx2 = new TH2F("h_zx2","zx of hit",5000,3550,5200,4000,-2000,2000);
   TH2F* h_yz2 = new TH2F("h_yz2","yz of hit",5000,3550,5200,4000,-2000,2000);
   */
-  TH2F* h_zr = new TH2F("h_zr","zr of hit",5000,3100,5200,1000,0,2000);
+  //TH2F* h_zr = new TH2F("h_zr","zr of hit",5000,3100,5200,1000,0,2000);
   
   //////layer histos///////
   /*
@@ -588,9 +604,9 @@ int main(int argc, char** argv){//main
 
   TH2F* h_EpCone = new TH2F("h_EpCone","Ereco/gen versus cone size",10,0.,1.,100,0.,2.); // changed from 20 to 2 do to e weighting 
   TH2F* h_EpPhi = new TH2F("h_EpPhi","Ereco/gen versus phi",100,-4.,4.,100,0.,2.); // changed from 20 to 2 
-  TH2F* h_etagenmax= new TH2F("h_etagenmax","eta gen vs max",100,1.,5.,100,1.,5.);
-  TH2F* h_phigenmax= new TH2F("h_phigenmax","phi gen vs max",100,-4,4.,100,-4.,4.);
-  TH1F* h_maxE = new TH1F("h_maxE","energy of highest energy hit",1000,0.,1000.);// changed from 5000 to 1000
+  //TH2F* h_etagenmax= new TH2F("h_etagenmax","eta gen vs max",100,1.,5.,100,1.,5.);
+  //TH2F* h_phigenmax= new TH2F("h_phigenmax","phi gen vs max",100,-4,4.,100,-4.,4.);
+  //TH1F* h_maxE = new TH1F("h_maxE","energy of highest energy hit",1000,0.,1000.);// changed from 5000 to 1000
   TH1F* h_ECone03 = new TH1F("h_ECone03","Sum energy cone 03",1000,0.,500.);// changed from 50000 to 500
   // histos from sarahs code //
   TH2F* h_banana = new TH2F("h_banana","banana plot",1000,0.,500.,1000,0.,500.);
@@ -608,7 +624,7 @@ int main(int argc, char** argv){//main
 
   const unsigned nEvts = ((pNevts > lSimTree->GetEntries() || pNevts==0) ? static_cast<unsigned>(lSimTree->GetEntries()) : pNevts) ;
 
-  std::cout << " -- Processing " << nEvts << " events out of " << lSimTree->GetEntries() << " " << lRecTree->GetEntries() << std::endl;
+  std::cout << " -- Processing " << nEvts << " events out of " << lSimTree->GetEntries() << " " << lRecTree->GetEntries() <<"\n"<< std::endl;
 
 
   //loop on events
@@ -639,14 +655,14 @@ int main(int argc, char** argv){//main
   bool firstEvent = true;
 
   // ---------- Event loop starts ----------
-
-   for (unsigned ievt(0); ievt<nEvts; ++ievt){//loop on entries
+  
+  for (unsigned ievt(0); ievt<nEvts; ++ievt , ++ievtRec){//loop on entries
   //for (unsigned ievt(0);ievt<100;++ievt){ // just lookings at the first 100 events for now
     if (ievtRec>=lRecTree->GetEntries()) continue;
 
 
-    if (debug) std::cout << std::endl<<std::endl<<"... Processing entry: " << ievt << std::endl;
-    else if (ievt%50 == 0) std::cout << "... Processing entry: " << ievt << std::endl;
+    if (debug && ievt%500 == 0) std::cout << std::endl<<"... Processing entry: " << ievt <<"\n"<< std::endl;
+    //else if (ievt%50 == 0) std::cout << "... Processing entry: " << ievt << std::endl;
 
 
     lSimTree->GetEntry(ievt);
@@ -656,6 +672,8 @@ int main(int argc, char** argv){//main
       nSkipped++;
       continue;
     }
+    //ievtRec++;
+    
     // start getting filling our weighting (from Sarah)
 
     if(firstEvent) {
@@ -690,17 +708,19 @@ int main(int argc, char** argv){//main
     double phigen=99999.;
     int pidgen=-1;
     double massgen= -1;
+    int trackid = -1;
     if((*genvec).size()>0) {
       pidgen=(*genvec)[0].pdgid();
       massgen=(*genvec)[0].mass();
       ptgenpx=(*genvec)[0].px()/1000.;
       ptgenpy=(*genvec)[0].py()/1000.;
       ptgenpz=(*genvec)[0].pz()/1000.;
+      //trackid=(*genvec)[0].trackID();
       ptgen=sqrt(ptgenpx*ptgenpx+ptgenpy*ptgenpy);
       //double theta=atan(ptgen/ptgenpz);
       //etagen=-log(tan(theta/2));
       etagen=(*genvec)[0].eta();
-      Egen=sqrt(ptgenpx*ptgenpx+ptgenpy*ptgenpy+ptgenpz*ptgenpz);
+      //Egen=sqrt(ptgenpx*ptgenpx+ptgenpy*ptgenpy+ptgenpz*ptgenpz);
       //phigen=atan2(ptgenpy,ptgenpx);
       phigen=(*genvec)[0].phi();
       //if(phigen<0) phigen=2.*TMath::Pi()+phigen;
@@ -710,19 +730,53 @@ int main(int argc, char** argv){//main
     h_eta->Fill(etagen); // check statistics by eta distribution
 
     if(debug) {
-      std::cout<<" gen vec size is "<<(*genvec).size()<<std::endl;
-      std::cout<<" first gen   pt  "<<ptgen<<" egen  "<<Egen<<" pidgen  "<<pidgen<<" etagen  "<<etagen<<" phi gen "<<phigen<<  "mass gen "<< massgen<<std::endl;
+      //std::cout<<" gen vec size is "<<(*genvec).size()<<std::endl;
+      //std::cout<<" first gen   pt  "<<ptgen<<" egen  "<<Egen<<" pidgen  "<<pidgen<<" etagen  "<<etagen<<" phi gen "<<phigen<<  "mass gen "<< massgen<<std::endl;
       Egen=0.; // added to later sum all egen 
+      double egentemp = 0;
+      TLorentzVector tlzv;
+      TLorentzVector tlzv_tmp;
+     
       for (unsigned iP(0); iP<(*genvec).size(); ++iP){
-        std::cout<<" gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<std::endl;
-	Egen=Egen+sqrt((*genvec)[iP].px()/1000.*(*genvec)[iP].px()/1000.+(*genvec)[iP].py()/1000.*(*genvec)[iP].py()/1000.+(*genvec)[iP].pz()/1000.*(*genvec)[iP].pz()/1000.); // sum egen
+        //std::cout<<" gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<std::endl;
+	double rtemp = sqrt((*genvec)[iP].x()*(*genvec)[iP].x()+(*genvec)[iP].y()*(*genvec)[iP].y());
+	h_gentracks->Fill((*genvec)[iP].z(),rtemp);
+	egentemp = sqrt((*genvec)[iP].px()/1000.*(*genvec)[iP].px()/1000.+(*genvec)[iP].py()/1000.*(*genvec)[iP].py()/1000.+(*genvec)[iP].pz()/1000.*(*genvec)[iP].pz()/1000.);
+	//egentemp = (*genvec)[iP].E()/1000;
+	Egen +=  egentemp;
+	tlzv_tmp.SetPtEtaPhiE((*genvec)[iP].pt(), (*genvec)[iP].eta(), (*genvec)[iP].phi(), (*genvec)[iP].E());
+	tlzv += tlzv_tmp;
+	//std::cout<<"Gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<" with trackID: "<<(*genvec)[iP].trackID()<<" at eta: "<<(*genvec)[iP].eta()<<" with energy: "<<egentemp<<std::endl;
+	//std::cout<<"really real energy "<<Egen<<std::endl;
+	//if( (*genvec)[iP].trackID() == 1 )
+	//  {
+	//    etagen = (*genvec)[iP].eta();
+	//    phigen = (*genvec)[iP].phi();
+	//  }
       }
-      std::cout<<"final egen sum is = "<<Egen<<std::endl;
+    
+      //if( etagen == (*genvec)[0].eta() && (*genvec)[0].trackID() != 1 )
+      //	{
+      //	  std::cout << "NO PARTICLE WITH TRACKID OF 1\nEtagen = "<<etagen<<"\nPhigen = "<<phigen<<std::endl;
+      //	}
+      //std::cout<<"final egen sum is = "<<Egen<<std::endl;
+     
+      etagen = tlzv.Eta();// get eta from summed tlorentz vectors 
+      phigen = tlzv.Phi();// get phi from summed tlorentz vectors 
+      ptgen = Egen / TMath::CosH(etagen);
+      //std::cout<<"Pt for this events is = "<<ptgen<<std::endl<<std::endl;
+      //if(etagen < 1.5 || etagen > 2.8)  continue;
+      //===================================================================================================================================================================
+            
     }
 
 
+    double ErecoRatio = 0; // for low e reco su,
+    double recoNotCone = 0; //for events outside of the cone 
+    
+   
     bool isScint = false;
-    if (debug) std::cout << " - Event contains " << (*rechitvec).size() << " rechits." << std::endl;
+    //if (debug) std::cout << " - Event contains " << (*rechitvec).size() << " rechits." << std::endl;
 
     // make some simple plots about all the rechits
     unsigned iMax=-1;
@@ -731,17 +785,17 @@ int main(int argc, char** argv){//main
     //find rmin and rmax of rechits 
 
     //double rmin = 99999;
-    double rmax = -1;
+    //double rmax = -1;
 
     // ---------- Rechit loop starts ----------
 
     // for longitudinal energy profile 
    
-    int nHits[80];
+    //int nHits[80];
 
     std::map<std::pair<int,int>,float> mymap_rechit;
     mymap_rechit.clear();
-
+    
     for (unsigned iH(0); iH<(*rechitvec).size(); ++iH){//loop on hits
       HGCSSRecoHit lHit = (*rechitvec)[iH];
       double leta = lHit.eta();
@@ -761,12 +815,12 @@ int main(int argc, char** argv){//main
       geomConv.fill(lHit.layer(),lHit.energy(),0,cellid,lHit.get_z());
       
 
-      if (lHit.energy()>1000.) std::cout << "reco energy"<< lHit.energy() << std::endl;
+      //if (lHit.energy()>1000.) std::cout << "reco energy"<< lHit.energy() << std::endl;
       //std::cout << "x "<< lHit.get_x() << "\t y "<<lHit.get_y() << "\t z" << lHit.get_z()<< std::endl; // added by Bryan, prints out xyz of each reco hit
       //std::cout<<"reco energy " << lHit.energy()<< " reco eta "<<lHit.eta()<< " reco phi " << lHit.phi() << " reco layer " << lHit.layer()<<" reco noise ratio "<< lHit.noiseFraction()<<std::endl;
 
-      double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)
-      double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
+      //double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)
+      //double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
       
       // printf added by bryan
       /*
@@ -777,47 +831,47 @@ int main(int argc, char** argv){//main
       printf("| reco weighted E = %f \t", lenergy);
       printf("| reco eta = %f \t",lHit.eta());
       printf("| reco phi = %f \t",lHit.phi());
-      */
+      ///
       //printf("| reco layer = %d \t",lHit.layer());
       //printf("| reco zhit = %d \t\n",lHit.get_x());
 
       //printf("| reco noise ratio = %f\t ||\n ",lHit.noiseFraction());
       //printf("| reco cellid = %d \t",cellid);
 
-     
-      nHits[layer] += 1 ;
+      */
+      // nHits[layer] += 1 ;
       
       
-      h_energy->Fill(lenergy);
-      h_z->Fill(lHit.get_z());
-      h_z1->Fill(lHit.get_z());
-      h_z2->Fill(lHit.get_z());
-      h_l->Fill(lHit.layer()+0.5);
+      //h_energy->Fill(lenergy);
+      //h_z->Fill(lHit.get_z());
+      //h_z1->Fill(lHit.get_z());
+      //h_z2->Fill(lHit.get_z());
+      //h_l->Fill(lHit.layer()+0.5);
       int ixx=lHit.layer();
       if(ixx>52) ixx=ixx-17;
-      h_zl->Fill(lHit.get_z(),ixx);
-      h_l2->Fill(lHit.layer()+0.5);
-      h_xy->Fill(lHit.get_x(),lHit.get_y());
-      h_zr->Fill(lHit.get_z(),r_hit); // added by Bryan
-      /*
-      h_zx->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
-      h_yz->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
-      h_zx1->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
-      h_yz1->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
-      h_zx2->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
-      h_yz2->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
-      h_zx10000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
-      h_zx1000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
-      h_xyz->Fill(lHit.get_x(),lHit.get_y(),lHit.get_z());// added by Bryan
-      */
-      h_etaphi->Fill(lHit.eta(),lHit.phi());
+      //h_zl->Fill(lHit.get_z(),ixx);
+      //h_l2->Fill(lHit.layer()+0.5);
+      //h_xy->Fill(lHit.get_x(),lHit.get_y());
+      //h_zr->Fill(lHit.get_z(),r_hit); // added by Bryan
+      
+      //h_zx->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
+      //h_yz->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
+      //h_zx1->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
+      //h_yz1->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
+      //h_zx2->Fill(lHit.get_z(),lHit.get_x()); //added by Bryan
+      //h_yz2->Fill(lHit.get_z(),lHit.get_y()); //added by Bryan
+      //h_zx10000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
+      //h_zx1000->Fill(lHit.get_z(),lHit.get_x());//added by Bryan
+      //h_xyz->Fill(lHit.get_x(),lHit.get_y(),lHit.get_z());// added by Bryan
+      
+      //h_etaphi->Fill(lHit.eta(),lHit.phi());
       
 
       //std::cout<<"Layer of hit "<<lHit.layer()<< " at z = "<<lHit.get_z()<<std::endl;
 
       // mapping stuff
 
-
+      /*
       if(!isScint && ixx == 37){
 	if(r_hit > rmax){
 	  rmax = r_hit;
@@ -840,7 +894,7 @@ int main(int argc, char** argv){//main
 	else if (ixx>=40&&ixx<=51) map_TH2F_3[ixx-40]->Fill(lHit.phi(),r_hit);
       }
 
-      
+      */
       //end of mapping stuff
       /*
       if(isScint)
@@ -1115,10 +1169,10 @@ int main(int argc, char** argv){//main
 	    h_nsxyl->Fill(lHit.get_x(),lHit.get_y());
 	  }
       };
-
+v
       */
     }//loop on hits
-
+    
     //fill long energy profile 
 
     //std::cout<<"nhits in layer 2:"<<nHits[2]<<std::endl;
@@ -1136,10 +1190,10 @@ int main(int argc, char** argv){//main
     HGCSSRecoHit lHit = (*rechitvec)[iMax];
     double maxeta = lHit.eta();
     double maxphi=lHit.phi();
-    double maxE=lHit.energy();
-    h_maxE->Fill(maxE);
-    h_etagenmax->Fill(maxeta,etagen);
-    h_phigenmax->Fill(maxphi,phigen);
+    //double maxE=lHit.energy();
+    //h_maxE->Fill(maxE);
+    //h_etagenmax->Fill(maxeta,etagen);
+    //h_phigenmax->Fill(maxphi,phigen);
     if(debug>2) {
       std::cout<<" Max hit energy eta phi "<<lHit.energy()<<" "<<lHit.eta()<<" "<<lHit.phi()<<std::endl;
     }
@@ -1154,6 +1208,7 @@ int main(int argc, char** argv){//main
     double rechitsumNoW[80] = {0};
     double penergy[80]={0};
     int    lostHit=0;
+    double rechitsum_dr[40] = {0};
 
     double rechitsumE01=0.;
     double rechitsumE02=0.;
@@ -1173,10 +1228,10 @@ int main(int argc, char** argv){//main
     double etaW=0.;
     double phiW=0.;
     double norm=0.;
-    //    double etaaxis=etagen;
-    //    double phiaxis=phigen;
-    double etaaxis=maxeta;
-    double phiaxis=maxphi;
+    //double etaaxis=etagen;
+    //double phiaxis=phigen;
+    double etaaxis=etagen;
+    double phiaxis=phigen;
     for (unsigned iH(0); iH<(*rechitvec).size(); ++iH){//loop on hits
       HGCSSRecoHit lHit = (*rechitvec)[iH];
       double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
@@ -1190,6 +1245,7 @@ int main(int argc, char** argv){//main
 
       const HGCSSSubDetector & subdet = myDetector.subDetectorByLayer(layer);
       isScint = subdet.isScint;
+      
 
       norm+=lenergy;
       etaW+=leta*lenergy;
@@ -1197,6 +1253,14 @@ int main(int argc, char** argv){//main
 
       double dR=DeltaR(etaaxis,phiaxis,leta,lphi);
       //double dR=fabs(etagen-leta);
+
+      double dr_iter = .025 ; double dr_start = 0; double dr_end = 1;
+      
+      for (int i = 0 ; i*dr_iter+dr_start < dr_end ; i++){
+	  if ( dR >= i*dr_iter+dr_start && dR < i*dr_iter+dr_start + dr_iter){
+	      rechitsum_dr[i]+=lenergy;
+	  }
+      }
 
       TH2Poly *map = isScint?(subdet.type==DetectorEnum::BHCAL1?geomConv.squareMap1():geomConv.squareMap2()): shape==4?geomConv.squareMap() : shape==2?geomConv.diamondMap() : shape==3? geomConv.triangleMap(): geomConv.hexagonMap();
 
@@ -1281,28 +1345,43 @@ int main(int argc, char** argv){//main
 	  if (isScint) rechitBHsumE05+=lenergy;
 	  if (lHit.noiseFraction()<0.5) rechitsumEWoNoise05+=lenergy;
 	}
+      
+      h_dRcounts->Fill(dR);
+      h_EvsdeltaR->Fill(dR,lenergy);
 
     }//loop on hits
     //if(debug>1) {
     //std::cout<<" reco gen are "<<rechitsumE01<<" "<<rechitsumE02<<" "<<rechitsumE03<<" "<<rechitsumE04<<" "<<rechitsumE05<<" "<<Egen<<std::endl;
     //}
     //if(debug>5) std::cout<<"weighted eta phi are "<<etaW/norm<<" "<<phiW/norm<<std::endl;
+    
+    double dr_iter = .025 ; double dr_start = 0; double dr_end = 1;
+    
+    for (int i = 0 ; i*dr_iter+dr_start < dr_end ; i++){
+      h_EsumvsdeltaR->Fill(i*dr_iter+dr_start,rechitsum_dr[i]);
+    }
 
     if (MaxE>energy_max) energy_max=MaxE;
+    ErecoRatio  = rechitsumE03/Egen;
+    if (ErecoRatio < .1) std::cout<<"E reco sum: ="<<rechitsumE03<<"...E gen: "<<Egen<<std::endl;
+    recoNotCone = rechitsumE03/norm;
 
     h_Egenreco->Fill(Egen,rechitsumE03/Egen);// changed from 5 to 3
     h_egenreco_cut->Fill(rechitsumE03_cut/Egen); // with scint cuts
     h_egenreco->Fill(rechitsumE03/Egen); // changed from 5 to 3
     h_lostE->Fill(etagen,rechitsum_lost); // fill lost energy per eta
+    h_elostoveregen->Fill(etagen,rechitsum_lost/Egen);// average ratio of lost energy/gen energy vs eta
     h_lostHit->Fill(etagen,lostHit); // fill lost hits per eta
     h_egenreco_scint->Fill(rechitsum_scint/Egen); //dead scint eta ring 
     h_egenreco_scint_cut->Fill(rechitsum_lost/Egen);
     h_egenreco_Si->Fill(rechitsum_Si/Egen);
     h_e_ScintvsSi->Fill(rechitsum_Si,rechitsum_lost+rechitsum_scint);
     h_ScintoverSi->Fill(rechitBHsumE03/rechitsum_Si);
-
+    h_correction->Fill(rechitsumE03_cut,rechitsumE03);
     
-    if (rechitBHsumE03/Egen >= .1){ //tuned---fill only when a substantial amount of energy deposited inside the scint
+    
+    
+    if (rechitBHsumE03/(rechitBHsumE03+rechitsum_Si) >= .1){ //tuned---fill only when a substantial amount of energy deposited inside the scint
 
       h_egenreco_rare->Fill(rechitsumE03/Egen);
       h_egenreco_rare_cut->Fill(rechitsumE03_cut/Egen);
@@ -1336,62 +1415,64 @@ int main(int argc, char** argv){//main
       //printf("tempPenergy[%d] = %f \t lambins[%d] = %f \n", ilayer, tempPenergy[ilayer],ilayer,lambins[ilayer]);
     }
     //std::cout<<"at eta gen. "<<etagen<<", the lost energy and hits are "<<rechitsum_lost<<" and "<<lostHit<<" respectively."<<std::endl;
-
-    double etaStart = 1.6;
-
-    double etaEter  = .1;
-    
-    //for (int index=0;index<12;++index){
-      //printf("rechitsum[%d]/Egen = %f \n",index,rechitsum[index]/Egen); 
-    //}
-    if ( etagen >= etaEter*0+etaStart && etagen <= etaEter*0+etaStart+.1 ){
-      h_egenreco1617->Fill(rechitsum[0]/Egen);
-      h_egenreco1617_cut->Fill(rechitsum_cut[0]/Egen);
-    }
-    if ( etagen >= etaEter*1+etaStart && etagen <= etaEter*1+etaStart+.1 ){
-      h_egenreco1718->Fill(rechitsum[1]/Egen);
-      h_egenreco1718_cut->Fill(rechitsum_cut[1]/Egen);
-    }
-    if ( etagen >= etaEter*2+etaStart && etagen <= etaEter*2+etaStart+.1 ){
-      h_egenreco1819->Fill(rechitsum[2]/Egen);
-      h_egenreco1819_cut->Fill(rechitsum_cut[2]/Egen);
-    }
-    if ( etagen >= etaEter*3+etaStart && etagen <= etaEter*3+etaStart+.1 ){
-      h_egenreco1920->Fill(rechitsum[3]/Egen);
-      h_egenreco1920_cut->Fill(rechitsum_cut[3]/Egen);
-    }
-    if ( etagen >= etaEter*4+etaStart && etagen <= etaEter*4+etaStart+.1 ){
-      h_egenreco2021->Fill(rechitsum[4]/Egen);
-      h_egenreco2021_cut->Fill(rechitsum_cut[4]/Egen);
-    }
-    if ( etagen >= etaEter*5+etaStart && etagen <= etaEter*5+etaStart+.1 ){
-      h_egenreco2122->Fill(rechitsum[5]/Egen);
-      h_egenreco2122_cut->Fill(rechitsum_cut[5]/Egen);
-    }
-    if ( etagen >= etaEter*6+etaStart && etagen <= etaEter*6+etaStart+.1 ){
-      h_egenreco2223->Fill(rechitsum[6]/Egen);
-      h_egenreco2223_cut->Fill(rechitsum_cut[6]/Egen);
-    }
-    if ( etagen >= etaEter*7+etaStart && etagen <= etaEter*7+etaStart+.1 ){
-      h_egenreco2324->Fill(rechitsum[7]/Egen);
-      h_egenreco2324_cut->Fill(rechitsum_cut[7]/Egen);
-    }
-    if ( etagen >= etaEter*8+etaStart && etagen <= etaEter*8+etaStart+.1 ){
-      h_egenreco2425->Fill(rechitsum[8]/Egen);
-      h_egenreco2425_cut->Fill(rechitsum_cut[8]/Egen);
-    }
-    if ( etagen >= etaEter*9+etaStart && etagen <= etaEter*9+etaStart+.1 ){
-      h_egenreco2526->Fill(rechitsum[9]/Egen);
-      h_egenreco2526_cut->Fill(rechitsum_cut[9]/Egen);
-    }
-    if ( etagen >= etaEter*10+etaStart && etagen <= etaEter*10+etaStart+.1 ){
-      h_egenreco2627->Fill(rechitsum[10]/Egen);
-      h_egenreco2627_cut->Fill(rechitsum_cut[10]/Egen);
-    }
-    if ( etagen >= etaEter*11+etaStart && etagen <= etaEter*11+etaStart+.1 ){
-      h_egenreco2728->Fill(rechitsum[11]/Egen);
-      h_egenreco2728_cut->Fill(rechitsum_cut[11]/Egen);
-    }
+   // if (doetaranges)
+   //   {
+   //	double etaStart = 1.6;
+   //
+   //	double etaEter  = .1;
+   //	
+   //	//for (int index=0;index<12;++index){
+   //	//printf("rechitsum[%d]/Egen = %f \n",index,rechitsum[index]/Egen); 
+   //	//}
+   //	if ( etagen >= etaEter*0+etaStart && etagen <= etaEter*0+etaStart+.1 ){
+   //	  h_egenreco1617->Fill(rechitsum[0]/Egen);
+   //	  h_egenreco1617_cut->Fill(rechitsum_cut[0]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*1+etaStart && etagen <= etaEter*1+etaStart+.1 ){
+   //	  h_egenreco1718->Fill(rechitsum[1]/Egen);
+   //	  h_egenreco1718_cut->Fill(rechitsum_cut[1]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*2+etaStart && etagen <= etaEter*2+etaStart+.1 ){
+   //	  h_egenreco1819->Fill(rechitsum[2]/Egen);
+   //	  h_egenreco1819_cut->Fill(rechitsum_cut[2]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*3+etaStart && etagen <= etaEter*3+etaStart+.1 ){
+   //	  h_egenreco1920->Fill(rechitsum[3]/Egen);
+   //	  h_egenreco1920_cut->Fill(rechitsum_cut[3]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*4+etaStart && etagen <= etaEter*4+etaStart+.1 ){
+   //	  h_egenreco2021->Fill(rechitsum[4]/Egen);
+   //	  h_egenreco2021_cut->Fill(rechitsum_cut[4]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*5+etaStart && etagen <= etaEter*5+etaStart+.1 ){
+   //	  h_egenreco2122->Fill(rechitsum[5]/Egen);
+   //	  h_egenreco2122_cut->Fill(rechitsum_cut[5]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*6+etaStart && etagen <= etaEter*6+etaStart+.1 ){
+   //	  h_egenreco2223->Fill(rechitsum[6]/Egen);
+   //	  h_egenreco2223_cut->Fill(rechitsum_cut[6]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*7+etaStart && etagen <= etaEter*7+etaStart+.1 ){
+   //	  h_egenreco2324->Fill(rechitsum[7]/Egen);
+   //	  h_egenreco2324_cut->Fill(rechitsum_cut[7]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*8+etaStart && etagen <= etaEter*8+etaStart+.1 ){
+   //	  h_egenreco2425->Fill(rechitsum[8]/Egen);
+   //	  h_egenreco2425_cut->Fill(rechitsum_cut[8]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*9+etaStart && etagen <= etaEter*9+etaStart+.1 ){
+   //	  h_egenreco2526->Fill(rechitsum[9]/Egen);
+   //	  h_egenreco2526_cut->Fill(rechitsum_cut[9]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*10+etaStart && etagen <= etaEter*10+etaStart+.1 ){
+   //	  h_egenreco2627->Fill(rechitsum[10]/Egen);
+   //	  h_egenreco2627_cut->Fill(rechitsum_cut[10]/Egen);
+   //	}
+   //	if ( etagen >= etaEter*11+etaStart && etagen <= etaEter*11+etaStart+.1 ){
+   //	  h_egenreco2728->Fill(rechitsum[11]/Egen);
+   //	  h_egenreco2728_cut->Fill(rechitsum_cut[11]/Egen);
+   //	}
+   //   }
    
     
     h_EpPhi->Fill(phigen,rechitsumE03/Egen); // changed from 2 to 3
@@ -1635,7 +1716,47 @@ int main(int argc, char** argv){//main
     //=========
 
     geomConv.initialiseHistos();
-    ievtRec++;
+
+
+    // ============== for low Erecosum events (ereco/egen < .1)=================
+
+
+   
+    if(debug && ErecoRatio < .1) {
+      std::cout<<"... Processing entry: " << ievt << std::endl;
+      std::cout<<"The amount of rechits in this entry is: " <<(*rechitvec).size()<<std::endl;
+      std::cout<<"Ereco/Egen is:                                   "<<ErecoRatio<<std::endl;
+      std::cout<<"Ereco within the cone / total Ereco of the entry "<<recoNotCone<<std::endl;
+      std::cout<<"Ereco is: " <<ErecoRatio*Egen<<std::endl;
+      h_tailEvents->Fill(ErecoRatio,recoNotCone); // should be roughly 1 to 1 
+      h_EtotvsEgen->Fill(Egen,norm); // should be roughly 1 to 1
+      h_EtotoverEgen->Fill(norm/Egen); // should be a gauss distribution centered around 1
+      for (unsigned iP(0); iP<(*rechitvec).size(); ++iP)
+	{
+	  HGCSSRecoHit lHit = (*rechitvec)[iP];
+	  unsigned layer = lHit.layer();
+	  double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)          
+	  double leta = lHit.eta();
+	  double lphi = lHit.phi();
+	  double dR=DeltaR(etagen,phigen,leta,lphi);
+	  h_EvsdeltaRtail->Fill(dR,lenergy);
+	}
+      //std::cout<<" gen vec size is "<<(*genvec).size()<<std::endl;
+      //std::cout<<" first gen   pt  "<<ptgen<<" egen  "<<Egen<<" pidgen  "<<pidgen<<" etagen  "<<etagen<<" phi gen "<<phigen<<  "mass gen "<< massgen<<std::endl;
+      Egen=0.; // added to later sum all egen 
+      double egentemp = 0; // to temp store the energy of the gen particle
+      printf("=========================================================================================\n");
+      std::cout<<"eta of cone: "<<etagen<< "....phi of cone: "<<phigen<<std::endl;
+      for (unsigned iP(0); iP<(*genvec).size(); ++iP){
+        egentemp = sqrt((*genvec)[iP].px()/1000.*(*genvec)[iP].px()/1000.+(*genvec)[iP].py()/1000.*(*genvec)[iP].py()/1000.+(*genvec)[iP].pz()/1000.*(*genvec)[iP].pz()/1000.);
+	std::cout<<"Gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<" with trackID: "<<(*genvec)[iP].trackID()<<" at eta: "<<(*genvec)[iP].eta()<<" with energy: "<<egentemp<<std::endl;
+	Egen=Egen+egentemp; // sum egen
+      }
+      std::cout<<"Final egen sum is = "<<Egen<<"\n"<<std::endl;
+    }
+    // =========== end of low events ===========================
+   
+    //++ievtRec;
    }//loop on entries
   // ---------- Event loop ends ----------
 
