@@ -281,7 +281,7 @@ int main(int argc, char** argv){//main
 
   double energy_max=-1.;
 
-  //TH1F* h_energy = new TH1F("h_energy","hit energy",1000,0.,5.);
+  TH1F* h_energy = new TH1F("h_energy","hit energy",1000,0.,5.);
   //TH1F* h_z = new TH1F("h_z","z of hit",5000,3100.,5200);
   //TH1F* h_z1 = new TH1F("h_z1","z of hit",5000,3150.,3550);
   //TH1F* h_z2 = new TH1F("h_z2","z of hit",5000,3550.,5200);
@@ -673,7 +673,11 @@ int main(int argc, char** argv){//main
       continue;
     }
     //ievtRec++;
-    
+    //if ((*genvec).size() > 1 && false) // skip events that have multiple particles generated before the detector
+    //  {
+    //	printf("Event %d has %d generated particles before the detector. SKIPPING!!!\n",ievt,(*genvec).size());
+    //	continue;
+    //  }
     // start getting filling our weighting (from Sarah)
 
     if(firstEvent) {
@@ -734,19 +738,32 @@ int main(int argc, char** argv){//main
       //std::cout<<" first gen   pt  "<<ptgen<<" egen  "<<Egen<<" pidgen  "<<pidgen<<" etagen  "<<etagen<<" phi gen "<<phigen<<  "mass gen "<< massgen<<std::endl;
       Egen=0.; // added to later sum all egen 
       double egentemp = 0;
+      double tempPt   = 0;
+      double maxPt    = 0;
       TLorentzVector tlzv;
       TLorentzVector tlzv_tmp;
-     
+      TLorentzVector tlzv0;
+
+      tlzv.SetPtEtaPhiE(0.0,0.0,0.0,0.0);
+      tlzv_tmp.SetPtEtaPhiE(0.0,0.0,0.0,0.0);
+      tlzv0.SetPtEtaPhiE(0.0,0.0,0.0,0.0);
+           
       for (unsigned iP(0); iP<(*genvec).size(); ++iP){
         //std::cout<<" gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<std::endl;
 	double rtemp = sqrt((*genvec)[iP].x()*(*genvec)[iP].x()+(*genvec)[iP].y()*(*genvec)[iP].y());
 	h_gentracks->Fill((*genvec)[iP].z(),rtemp);
 	egentemp = sqrt((*genvec)[iP].px()/1000.*(*genvec)[iP].px()/1000.+(*genvec)[iP].py()/1000.*(*genvec)[iP].py()/1000.+(*genvec)[iP].pz()/1000.*(*genvec)[iP].pz()/1000.);
+	tempPt = (*genvec)[iP].pt();
+	if (tempPt > maxPt)
+	  {
+	    maxPt = tempPt;
+	    tlzv0.SetPtEtaPhiE((*genvec)[iP].pt(), (*genvec)[iP].eta(), (*genvec)[iP].phi(), (*genvec)[iP].E());
+	  }
 	//egentemp = (*genvec)[iP].E()/1000;
 	Egen +=  egentemp;
 	tlzv_tmp.SetPtEtaPhiE((*genvec)[iP].pt(), (*genvec)[iP].eta(), (*genvec)[iP].phi(), (*genvec)[iP].E());
 	tlzv += tlzv_tmp;
-	//std::cout<<"Gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<" with trackID: "<<(*genvec)[iP].trackID()<<" at eta: "<<(*genvec)[iP].eta()<<" with energy: "<<egentemp<<std::endl;
+	if ((*genvec).size() > 1 ) std::cout<<"Gen particle "<<iP<<" is (pdgid) "<<(*genvec)[iP].pdgid()<<" with trackID: "<<(*genvec)[iP].trackID()<<" at eta: "<<(*genvec)[iP].eta()<<" with Pt: "<<(*genvec)[iP].pt()/1000<<std::endl;
 	//std::cout<<"really real energy "<<Egen<<std::endl;
 	//if( (*genvec)[iP].trackID() == 1 )
 	//  {
@@ -754,16 +771,27 @@ int main(int argc, char** argv){//main
 	//    phigen = (*genvec)[iP].phi();
 	//  }
       }
-    
+      if ((*genvec).size() > 1 )
+	{
+	  std::cout<<"Max Pt is   "<<tlzv0.Pt()/1000<<std::endl;
+	  std::cout<<"Total Pt is "<<tlzv.Pt()/1000<<std::endl;
+	}
       //if( etagen == (*genvec)[0].eta() && (*genvec)[0].trackID() != 1 )
       //	{
       //	  std::cout << "NO PARTICLE WITH TRACKID OF 1\nEtagen = "<<etagen<<"\nPhigen = "<<phigen<<std::endl;
       //	}
       //std::cout<<"final egen sum is = "<<Egen<<std::endl;
-     
+      if ( tlzv0.Pt() / tlzv.Pt() < .95 )
+	{
+	  printf("======================================================================================================================================================\n");
+	  printf("Leading particle in event %d has a total fractional Pt of %f, which contains less than 95 percent of the total transverse momentum. SKIPPING!!!\n",ievt,tlzv0.Pt() / tlzv.Pt());
+	  printf("======================================================================================================================================================\n");
+	  continue ;
+	}
       etagen = tlzv.Eta();// get eta from summed tlorentz vectors 
       phigen = tlzv.Phi();// get phi from summed tlorentz vectors 
-      ptgen = Egen / TMath::CosH(etagen);
+      //ptgen = Egen / TMath::CosH(etagen);
+      ptgen  = tlzv.Pt()/1000;
       //std::cout<<"Pt for this events is = "<<ptgen<<std::endl<<std::endl;
       //if(etagen < 1.5 || etagen > 2.8)  continue;
       //===================================================================================================================================================================
@@ -842,7 +870,7 @@ int main(int argc, char** argv){//main
       // nHits[layer] += 1 ;
       
       
-      //h_energy->Fill(lenergy);
+      h_energy->Fill(lHit.energy());
       //h_z->Fill(lHit.get_z());
       //h_z1->Fill(lHit.get_z());
       //h_z2->Fill(lHit.get_z());
