@@ -43,7 +43,7 @@ DetectorConstruction::DetectorConstruction(G4int ver, G4int mod,
   firstMixedlayer_ = 9999;
   firstScintlayer_ = 9999;
 
-  m_minEta0 = 1.4;
+  m_minEta0 = 1.306;
   m_maxEta0 = 3.0;
   // min Eta per layer, 0-27 for EE, 28-35 FH, 36-51 BH
   double minEta[52] = { 1.461, 1.464, 1.463, 1.466, 1.465, 1.468, 1.467, 1.469, 1.469, 1.471,

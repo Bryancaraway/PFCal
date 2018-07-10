@@ -134,8 +134,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
   G4cout << " -- Gun position set to: " << x0 << "," << y0 << "," << z0 << G4endl;
-
-  G4double theta0 = 2*atan(exp(-1*eta_));
+  
+  G4double deltaEta = .07;
+  G4double eta0 = G4RandFlat::shoot(eta_, eta_ + deltaEta);
+  G4double theta0 = 2*atan(exp(-1*eta0));
   G4double phi0 = (G4RandFlat::shoot(0.,2*PI));
   if (model_ == 2) particleGun->SetParticleMomentumDirection(G4ThreeVector(cos(phi0)*sin(theta0), sin(phi0)*sin(theta0), cos(theta0)));
   

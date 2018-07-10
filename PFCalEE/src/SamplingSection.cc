@@ -1,5 +1,8 @@
 #include "G4VPhysicalVolume.hh"
-
+#include <iostream>
+#include <math.h>
+#include <cmath>
+#include <stdio.h>
 #include "SamplingSection.hh"
 
 //
@@ -44,6 +47,8 @@ void SamplingSection::add(G4double den, G4double dl,
 	lHit.parentId = parentID;
 	sens_HitVec[idx].push_back(lHit);
 
+	double radius = sqrt(position.x()*position.x()+position.y()*position.y());
+	std::cout<<-log(tan(atan(radius/position.z())/2))<<std::endl;
       }//if Si
     }//if in right material
     
@@ -65,6 +70,8 @@ void SamplingSection::add(G4double den, G4double dl,
     lHit.trackId = trackID;
     lHit.parentId = parentID;
     supportcone_HitVec.push_back(lHit);
+    double radius = sqrt(position.x()*position.x()+position.y()*position.y());
+    std::cout<<-log(tan(atan(radius/position.z())/2))<<std::endl;
   }
 
 }

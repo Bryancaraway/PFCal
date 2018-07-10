@@ -129,17 +129,17 @@ double HGCSSDigitisation::sumBins(const std::vector<TH2D *> & aHistVec,
   return energy;
 }
 void HGCSSDigitisation::Print(std::ostream & aOs) const{
-  aOs << "====================================" << std::endl
-      << "=== INIT DIGITISATION PARAMETERS ===" << std::endl
-      << "====================================" << std::endl
-      << " = Random seed: " << rndm_.GetSeed() << std::endl
-      << " = Nphoto-electrons: " << npe_ << std::endl
-      << " = cross-talk: " << crossTalk_ << std::endl
-      << " = Npixels total: " << nTotal_ << std::endl
-      << " = sigmaPixel: " << sigmaPix_ << std::endl
-    //<< " = sigmaNoise: ECAL " << noise_.find(DetectorEnum::ECAL)->second << ", FHCAL " << noise_.find(DetectorEnum::FHCAL)->second << ", BHCAL " << noise_.find(DetectorEnum::BHCAL)->second << std::endl
-      << " = MIPtoADC conversions: ECAL " << mipToADC_.find(DetectorEnum::FECAL)->second << ", FHCAL " << mipToADC_.find(DetectorEnum::FHCAL)->second << std::endl
-      << " = Time cut: ECAL " << timeCut_.find(DetectorEnum::FECAL)->second << ", FHCAL " << timeCut_.find(DetectorEnum::FHCAL)->second << ", BHCAL " << timeCut_.find(DetectorEnum::BHCAL1)->second << std::endl
-      << " = Intercalibration: ECAL " << gainSmearing_.find(DetectorEnum::FECAL)->second << ", FHCAL " << gainSmearing_.find(DetectorEnum::FHCAL)->second << ", BHCAL " << gainSmearing_.find(DetectorEnum::BHCAL1)->second << std::endl
-      << "====================================" << std::endl;
+//aOs << "====================================" << std::endl
+//    << "=== INIT DIGITISATION PARAMETERS ===" << std::endl
+//    << "====================================" << std::endl
+//    << " = Random seed: " << rndm_.GetSeed() << std::endl
+//    << " = Nphoto-electrons: " << npe_ << std::endl
+//    << " = cross-talk: " << crossTalk_ << std::endl
+//    << " = Npixels total: " << nTotal_ << std::endl
+//    << " = sigmaPixel: " << sigmaPix_ << std::endl
+//  //<< " = sigmaNoise: ECAL " << noise_.find(DetectorEnum::ECAL)->second << ", FHCAL " << noise_.find(DetectorEnum::FHCAL)->second << ", BHCAL " << noise_.find(DetectorEnum::BHCAL)->second << std::endl
+//    << " = MIPtoADC conversions: ECAL " << mipToADC_.find(DetectorEnum::FECAL)->second << ", FHCAL " << mipToADC_.find(DetectorEnum::FHCAL)->second << std::endl
+//    << " = Time cut: ECAL " << timeCut_.find(DetectorEnum::FECAL)->second << ", FHCAL " << timeCut_.find(DetectorEnum::FHCAL)->second << ", BHCAL " << timeCut_.find(DetectorEnum::BHCAL1)->second << std::endl
+//    << " = Intercalibration: ECAL " << gainSmearing_.find(DetectorEnum::FECAL)->second << ", FHCAL " << gainSmearing_.find(DetectorEnum::FHCAL)->second << ", BHCAL " << gainSmearing_.find(DetectorEnum::BHCAL1)->second << std::endl
+//    << "====================================" << std::endl;
 };
