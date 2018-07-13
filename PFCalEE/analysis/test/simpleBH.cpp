@@ -367,9 +367,17 @@ int main(int argc, char** argv){//main
 			1.474, 1.455, 1.437, 1.420, 1.403, 1.376, 1.351, 1.327, 1.306, 1.316,
 			1.332, 1.348, 1.364, 1.379, 1.395, 1.410 };
   
-  int bin_exclude=1;
+  int bin_exclude=2;
   double r_cut[69]; // r_cut values to exclude a few boundary hits
-
+  double r_noisecut[69] = { 1567.5, 1567.5, 1575.6, 1575.6, 1583.7, 1583.7, 1591.8, 1591.8, 1599.9, 1599.9,
+			    1608.0, 1608.0, 1616.1, 1616.1, 1624.2, 1624.2, 1632.3, 1632.3, 1640.4, 1640.4,
+			    1648.5, 1648.5, 1656.6, 1656.6, 1664.7, 1664.7, 1672.8, 1672.8,
+			    1696.9, 1713.5, 1730.1, 1746.7, 1763.3, 1779.9, 1796.4, 1844.2,
+			    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			    0, 0, 0, 0, 0, 0,
+			    0,
+			    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			    0, 0, 0, 0, 0, 0 }; //cut values to exlude hits outside of the detector
   // BH fine part
   for (int ilayer=36;ilayer<=39;ilayer++){
     int ilayer_org=ilayer+17;
@@ -384,10 +392,11 @@ int main(int argc, char** argv){//main
     double eta_tmp2=1.4+double(eta_index[ilayer_org])*0.01745;// to print out the boundary 
     double z_tmp = z_layer[ilayer_org];
     //r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-eta_tmp))); //=====for inner excluded ring boundary
-    r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-(1.4+bin_exclude*0.01745)))); // ====== for outer excluded ring boundary
+    r_noisecut[ilayer_org] = z_tmp*tan(2.*atan(exp(-(minEta[ilayer])))); // ===== for outer excluded ring boundary
+    r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-(minEta[ilayer]+bin_exclude*0.01745)))); // ====== for outer excluded ring boundary
     //std::cout<<"r min of scint at layer "<<ilayer_org<<" is: "<<z_tmp*tan(2.*atan(exp(-eta_tmp2)))<<std::endl;
     std::cout<<"r max of scint at layer "<<ilayer_org<<" is: "<< z_tmp*tan(2.*atan(exp(-minEta[ilayer])))<<std::endl;
-    std::cout<<"r of excluded outer scint ring at layer "<<ilayer_org<<" is: "<< z_tmp*tan(2.*atan(exp(-(1.4+bin_exclude*0.01745))))<<std::endl;
+    std::cout<<"r of excluded outer scint ring at layer "<<ilayer_org<<" is: "<< z_tmp*tan(2.*atan(exp(-(minEta[ilayer]+bin_exclude*0.01745))))<<std::endl;
   }  
   // BH coarse part
   for (int ilayer=40;ilayer<=51;ilayer++){
@@ -403,10 +412,11 @@ int main(int argc, char** argv){//main
     double eta_tmp2=1.4+double(eta_index[ilayer_org])*0.02182;// to print out the boundary 
     double z_tmp = z_layer[ilayer_org];
     //r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-eta_tmp)));//=====for inner excluded ring boundary
-    r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-(1.4+bin_exclude*0.02182)))); // ====== for outer excluded ring boundary  
+    r_noisecut[ilayer_org] = z_tmp*tan(2.*atan(exp(-(minEta[ilayer])))); // ===== for outer excluded ring boundary
+    r_cut[ilayer_org] = z_tmp*tan(2.*atan(exp(-(minEta[ilayer]+bin_exclude*0.02182)))); // ====== for outer excluded ring boundary  
     //std::cout<<"r min of scint at layer "<<ilayer_org<<" is: "<<z_tmp*tan(2.*atan(exp(-eta_tmp2)))<<std::endl;
     std::cout<<"r max of scint at layer "<<ilayer_org<<" is: "<< z_tmp*tan(2.*atan(exp(-minEta[ilayer])))<<std::endl;
-    std::cout<<"r of excluded outer scint ring at layer "<<ilayer_org<<" is: "<< z_tmp*tan(2.*atan(exp(-(1.4+bin_exclude*0.02182))))<<std::endl;
+    std::cout<<"r of excluded outer scint ring at layer "<<ilayer_org<<" is: "<< z_tmp*tan(2.*atan(exp(-(minEta[ilayer]+bin_exclude*0.02182))))<<std::endl;
   } 
   /*
   for (int i_test = 0 ; i_test<69 ; i_test++){
@@ -847,6 +857,7 @@ int main(int argc, char** argv){//main
     
     for (unsigned iH(0); iH<(*rechitvec).size(); ++iH){//loop on hits
       HGCSSRecoHit lHit = (*rechitvec)[iH];
+      //if (lHit.noiseFraction()>0.5) continue;
       double leta = lHit.eta();
       //double lphi = lHit.phi();
       //std::cout<<"getting layer"<<std::endl;
@@ -878,6 +889,7 @@ int main(int argc, char** argv){//main
       geomConv.fill(lHit.layer(),lenergyNoW,0,cellid,lHit.get_z());
       //double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)
       double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
+      if (( r_hit > r_noisecut[layer]) && (layer < 36 || layer > 52)) continue;
       
       // printf added by bryan
       /*
@@ -1291,6 +1303,7 @@ v
     double phiaxis=phigen;
     for (unsigned iH(0); iH<(*rechitvec).size(); ++iH){//loop on hits
       HGCSSRecoHit lHit = (*rechitvec)[iH];
+      //if (lHit.noiseFraction()>0.5) continue;
       double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
       unsigned layer = lHit.layer();
       double leta = lHit.eta();
@@ -1360,10 +1373,13 @@ v
       ///////////used to make energy reso plots//////////////
       if(dR<0.3)//==========================================change to .4 for quark gun
 	{
+
+	  if (( r_hit > r_noisecut[layer]) && (layer < 36 || layer > 52)) continue;
+	  
 	  rechitsumE03+=lenergy;
 	  rechitsumNoW[layer] += lenergyNoW;
 	  penergy[layer]+=lenergy;
-
+	  
 	  if (isScint && r_hit <= r_cut[layer]){
 	    rechitsum_scint+=lenergy;
 	  }
