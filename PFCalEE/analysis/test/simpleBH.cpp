@@ -444,18 +444,16 @@ int main(int argc, char** argv){//main
     if (i > 0) lambins[i] += lambins[i-1];
   }
   
-  double z_layer2[52]={
-    3198.0,    3207.1,    3222.4,    3231.5,    3246.8,
-    3255.9,    3271.2,    3280.3,    3295.6,    3304.7,
-    3320.0,    3329.1,    3344.4,    3353.5,    3368.8,
-    3377.9,    3393.2,    3402.3,    3417.6,    3426.7,
-    3442.0,    3451.1,    3466.4,    3475.5,    3490.8,
-    3499.9,    3515.2,    3524.3,    3577.4,    3626.4,
-    3675.4,    3724.4,    3773.4,    3822.4,    3871.4,
-    3920.4,    3969.4,    4020.3,    4071.2,    4122.1,
-    4206.0,    4289.9,    4373.8,    4457.7,    4541.6,
-    4625.5,    4709.4,    4793.3,    4877.2,    4961.1,
-    5045.0,    5128.9};
+  double z_layer2[53]={
+    3190.0,    3200.0,    3209.1,    3224.4,    3233.5,    3248.8,
+    3257.9,    3273.2,    3283.3,    3297.6,    3306.7,
+    3322.0,    3331.1,    3346.4,    3355.5,    3370.8,
+    3379.9,    3395.2,    3404.3,    3419.6,    3428.7,
+    3444.0,    3453.1,    3468.4,    3477.5,    3492.8,
+    3501.9,    3517.2,    3526.3,    3579.4,    3628.4,
+    3677.4,    3725.4,    3775.4,    3824.4,    3874.4,    3922.4,   
+    3971.4,    4022.3,    4073.2,    4124.1,    4208.0,    4291.9,    4375.8,    4459.7,   
+    4543.6,    4627.5,    4711.4,    4795.3,    4879.2,    4963.1,    5047.0,    5130.9};
 
   TProfile* h_elam = new TProfile("h_elam","mip vs lam",68,lambins);
   TProfile* h_elam_off = new TProfile("h_elam_off","mip vs lam",68,lambins);
@@ -539,8 +537,8 @@ int main(int argc, char** argv){//main
   */
 
   
-  TH2F* h_zr = new TH2F("h_zr","zr of hit",51,z_layer2,3000,0,3000);
-  TH2F* h_simzr = new TH2F("h_simzr","zr of hit",51,z_layer2,3000,0,3000);
+  TH2F* h_zr = new TH2F("h_zr","zr of hit",2100,3100,5200,3000,0,3000);
+  TH2F* h_simzr = new TH2F("h_simzr","zr of hit",2100,3100,5200,3000,0,3000);
   TH2F* h_lr = new TH2F("h_lr","lr of hit",55,0,55,3000,0,3000);
   //////layer histos///////
   /*
@@ -889,7 +887,7 @@ int main(int argc, char** argv){//main
       geomConv.fill(lHit.layer(),lenergyNoW,0,cellid,lHit.get_z());
       //double lenergy=lHit.energy()*absW[layer]/1000.; // weight added (from Sarah's code)
       double r_hit = sqrt(lHit.get_x()*lHit.get_x()+lHit.get_y()*lHit.get_y());
-      if (( r_hit > r_noisecut[layer]) && (layer < 36 || layer > 52)) continue;
+      //if (( r_hit > r_noisecut[layer]) && (layer < 36 || layer > 52)) continue;
       
       // printf added by bryan
       /*
@@ -1374,7 +1372,7 @@ v
       if(dR<0.3)//==========================================change to .4 for quark gun
 	{
 
-	  if (( r_hit > r_noisecut[layer]) && (layer < 36 || layer > 52)) continue;
+	  //if (( r_hit > r_noisecut[layer]) && (layer < 36 || layer > 52)) continue;
 	  
 	  rechitsumE03+=lenergy;
 	  rechitsumNoW[layer] += lenergyNoW;
